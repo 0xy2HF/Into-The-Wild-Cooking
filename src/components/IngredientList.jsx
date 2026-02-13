@@ -10,78 +10,72 @@ function IngredientList({ ingredients, onEdit, onDelete }) {
   return (
     <div className="ingredient-list">
       <h2>Ingredients ({ingredients.length})</h2>
-      <div className="ingredient-cards">
-        {ingredients.map((ing) => (
-          <div key={ing.id} className="ingredient-card">
-            <div className="card-header">
-              <h3>{ing.name}</h3>
-              <div className="card-actions">
-                <button
-                  className="btn-icon"
-                  onClick={() => onEdit(ing)}
-                  title="Edit"
-                >
-                  ✎
-                </button>
-                <button
-                  className="btn-icon btn-danger"
-                  onClick={() => onDelete(ing.id)}
-                  title="Delete"
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-
-            <div className="card-body">
-              {ing.types.length > 0 && (
-                <div className="card-field">
-                  <span className="field-label">Type</span>
+      <div className="sheet-wrapper">
+        <table className="sheet">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Types</th>
+              <th>Appetising</th>
+              <th>Food Pt</th>
+              <th>Effects</th>
+              <th>Time</th>
+              <th>Boost</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ingredients.map((ing) => (
+              <tr key={ing.id}>
+                <td className="sheet-name">{ing.name}</td>
+                <td>
                   <div className="tag-display">
                     {ing.types.map((t, i) => (
                       <span key={i} className="tag tag-type">{t}</span>
                     ))}
                   </div>
-                </div>
-              )}
-
-              <div className="card-stats">
-                <div className="stat">
-                  <span className="stat-label">Appetising</span>
+                </td>
+                <td>
                   <span className={`stat-badge ${ing.appetisingScore ? 'stat-badge-yes' : 'stat-badge-no'}`}>
                     {ing.appetisingScore ? 'Yes' : 'No'}
                   </span>
-                </div>
-                <div className="stat">
-                  <span className="stat-label">Food Pt</span>
-                  <span className="stat-value">{ing.foodPoint}</span>
-                </div>
-              </div>
-
-              {ing.effects.length > 0 && (
-                <div className="card-field">
-                  <span className="field-label">Effects</span>
+                </td>
+                <td className="sheet-number">{ing.foodPoint}</td>
+                <td>
                   <div className="tag-display">
                     {ing.effects.map((e, i) => (
                       <span key={i} className="tag tag-effect">{e}</span>
                     ))}
                   </div>
-                </div>
-              )}
-
-              <div className="card-footer">
-                <span className="time-display">
-                  {ing.time}
-                </span>
-                {ing.boost !== 1 && (
-                  <span className="boost-display">
-                    x{ing.boost} boost
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
+                </td>
+                <td className="sheet-mono">{ing.time}</td>
+                <td>
+                  {ing.boost !== 1 && (
+                    <span className="boost-display">x{ing.boost}</span>
+                  )}
+                </td>
+                <td>
+                  <div className="sheet-actions">
+                    <button
+                      className="btn-icon"
+                      onClick={() => onEdit(ing)}
+                      title="Edit"
+                    >
+                      ✎
+                    </button>
+                    <button
+                      className="btn-icon btn-danger"
+                      onClick={() => onDelete(ing.id)}
+                      title="Delete"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   )

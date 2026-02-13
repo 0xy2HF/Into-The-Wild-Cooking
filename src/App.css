@@ -327,59 +327,67 @@
   opacity: 0.5;
 }
 
-.ingredient-cards {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-}
-
-.ingredient-card {
-  background: rgba(255, 255, 255, 0.05);
+/* ===== Sheet / Table ===== */
+.sheet-wrapper {
+  overflow-x: auto;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  padding: 1rem;
-  transition: border-color 0.2s;
 }
 
-.ingredient-card:hover {
-  border-color: rgba(100, 108, 255, 0.3);
+.sheet {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
 }
 
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.75rem;
-}
-
-.card-header h3 {
-  margin: 0;
-  font-size: 1.1rem;
-}
-
-.card-actions {
-  display: flex;
-  gap: 0.3rem;
-}
-
-.card-body {
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-}
-
-.card-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-.field-label {
+.sheet thead th {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.6rem 0.75rem;
+  text-align: left;
   font-size: 0.7rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  opacity: 0.5;
+  opacity: 0.7;
+  white-space: nowrap;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sheet tbody tr {
+  transition: background 0.15s;
+}
+
+.sheet tbody tr:hover {
+  background: rgba(100, 108, 255, 0.06);
+}
+
+.sheet tbody tr:not(:last-child) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sheet td {
+  padding: 0.5rem 0.75rem;
+  vertical-align: middle;
+}
+
+.sheet-name {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sheet-number {
+  font-weight: 700;
+  text-align: center;
+}
+
+.sheet-mono {
+  font-family: monospace;
+  opacity: 0.8;
+}
+
+.sheet-actions {
+  display: flex;
+  gap: 0.3rem;
 }
 
 .tag-display {
@@ -398,32 +406,7 @@
   border-color: rgba(255, 152, 0, 0.3);
 }
 
-/* ===== Stats ===== */
-.card-stats {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-end;
-}
-
-.stat {
-  flex: 1;
-}
-
-.stat-label {
-  font-size: 0.7rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  opacity: 0.5;
-  display: block;
-  margin-bottom: 0.2rem;
-}
-
-.stat-value {
-  font-size: 1rem;
-  font-weight: 700;
-}
-
+/* ===== Badges ===== */
 .stat-badge {
   display: inline-block;
   padding: 0.1em 0.6em;
@@ -455,21 +438,6 @@
   height: 18px;
   accent-color: #646cff;
   cursor: pointer;
-}
-
-/* ===== Card Footer ===== */
-.card-footer {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-  padding-top: 0.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  font-size: 0.85rem;
-}
-
-.time-display {
-  font-family: monospace;
-  opacity: 0.8;
 }
 
 .boost-display {
