@@ -12,6 +12,13 @@ const STORAGE_KEY = 'wild-cooking-ingredients'
 const RULES_STORAGE_KEY = 'wild-cooking-rules'
 const INGREDIENTS_VERSION_KEY = 'wild-cooking-ingredients-version'
 const RULES_VERSION_KEY = 'wild-cooking-rules-version'
+const INIT_KEY = 'wild-cooking-initialized'
+
+const expectedVersion = String(initialIngredients.version) + '-' + String(initialRules.version)
+if (localStorage.getItem(INIT_KEY) !== expectedVersion) {
+  localStorage.setItem(INIT_KEY, expectedVersion)
+  location.reload()
+}
 
 function loadIngredients() {
   const stored = localStorage.getItem(STORAGE_KEY)
