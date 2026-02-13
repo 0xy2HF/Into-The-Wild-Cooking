@@ -74,9 +74,65 @@
   border-color: #646cff;
 }
 
+.btn-share {
+  background: #646cff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5em 1.2em;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-share:hover {
+  background: #535bf2;
+}
+
 .import-btn {
   display: inline-flex;
   align-items: center;
+}
+
+/* ===== Share Modal ===== */
+.share-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  backdrop-filter: blur(4px);
+}
+
+.share-modal {
+  background: #1a1a2e;
+  border: 1px solid rgba(100, 108, 255, 0.3);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+}
+
+.share-modal h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.2rem;
+}
+
+.share-modal p {
+  margin: 0 0 1.5rem;
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+.share-modal-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .btn-icon {

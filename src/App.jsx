@@ -18,9 +18,38 @@ function saveIngredients(ingredients) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(ingredients))
 }
 
+function compressData(data) {
+  const json = JSON.stringify(data)
+  const bytes = new TextEncoder().encode(json)
+  const binString = Array.from(bytes, (b) => String.fromCodePoint(b)).join('')
+  return btoa(binString)
+}
+
+function decompressData(base64) {
+  const binString = atob(base64)
+  const bytes = Uint8Array.from(binString, (c) => c.codePointAt(0))
+  return JSON.parse(new TextDecoder().decode(bytes))
+}
+
+function getSharedIngredients() {
+  const params = new URLSearchParams(window.location.search)
+  const shared = params.get('shared')
+  if (shared) {
+    try {
+      const data = decompressData(shared)
+      if (Array.isArray(data)) return data
+    } catch {
+      // invalid shared data
+    }
+  }
+  return null
+}
+
 function App() {
   const [ingredients, setIngredients] = useState(loadIngredients)
   const [editingIngredient, setEditingIngredient] = useState(null)
+  const [sharedIngredients, setSharedIngredients] = useState(getSharedIngredients)
+  const [copySuccess, setCopySuccess] = useState(false)
 
   useEffect(() => {
     saveIngredients(ingredients)
@@ -43,6 +72,40 @@ function App() {
 
   const handleEdit = (ingredient) => {
     setEditingIngredient(ingredient)
+  }
+
+  const handleShare = async () => {
+    const encoded = compressData(ingredients)
+    const url = `${window.location.origin}${window.location.pathname}?shared=${encoded}`
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopySuccess(true)
+      setTimeout(() => setCopySuccess(false), 2000)
+    } catch {
+      // fallback: prompt with url
+      prompt('Copie ce lien pour partager tes ingrédients :', url)
+    }
+  }
+
+  const handleMergeShared = () => {
+    if (!sharedIngredients) return
+    const existingIds = new Set(ingredients.map((i) => i.id))
+    const newOnes = sharedIngredients.filter((i) => !existingIds.has(i.id))
+    setIngredients((prev) => [...prev, ...newOnes])
+    setSharedIngredients(null)
+    window.history.replaceState({}, '', window.location.pathname)
+  }
+
+  const handleReplaceWithShared = () => {
+    if (!sharedIngredients) return
+    setIngredients(sharedIngredients)
+    setSharedIngredients(null)
+    window.history.replaceState({}, '', window.location.pathname)
+  }
+
+  const handleDismissShared = () => {
+    setSharedIngredients(null)
+    window.history.replaceState({}, '', window.location.pathname)
   }
 
   const handleExport = () => {
@@ -77,6 +140,9 @@ function App() {
         <h1>Into The Wild Cooking</h1>
         <p className="subtitle">Food Crafting Ingredient Manager</p>
         <div className="header-actions">
+          <button className="btn-share" onClick={handleShare}>
+            {copySuccess ? 'Lien copié !' : 'Partager'}
+          </button>
           <button className="btn-secondary" onClick={handleExport}>
             Export JSON
           </button>
@@ -91,6 +157,26 @@ function App() {
           </label>
         </div>
       </header>
+
+      {sharedIngredients && (
+        <div className="share-modal-overlay">
+          <div className="share-modal">
+            <h3>Ingrédients partagés reçus</h3>
+            <p>{sharedIngredients.length} ingrédient{sharedIngredients.length > 1 ? 's' : ''} dans ce partage</p>
+            <div className="share-modal-actions">
+              <button className="btn-primary" onClick={handleMergeShared}>
+                Fusionner
+              </button>
+              <button className="btn-secondary" onClick={handleReplaceWithShared}>
+                Tout remplacer
+              </button>
+              <button className="btn-secondary" onClick={handleDismissShared}>
+                Ignorer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <main className="app-main">
         <aside className="sidebar">
