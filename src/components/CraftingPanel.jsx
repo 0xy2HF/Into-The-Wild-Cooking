@@ -53,11 +53,17 @@ function computeCraft(selected, matchedRules) {
   if (selected.length < 2) return null
 
   const totalFoodPoints = selected.reduce((sum, i) => sum + i.foodPoint, 0)
-  const totalTime = selected.reduce((sum, i) => sum + parseTime(i.time), 0)
+  const totalTime = selected.reduce(
+    (sum, i) => sum + (i.time !== null ? parseTime(i.time) : 0),
+    0
+  )
 
   const allEffects = [...new Set(selected.flatMap((i) => i.effects))]
 
-  const boostMultiplier = selected.reduce((prod, i) => prod * i.boost, 1)
+  const boostMultiplier = selected.reduce(
+    (prod, i) => prod * (i.boost !== null ? i.boost : 1),
+    1
+  )
 
   let ruleMultiplier = 1
   for (const rule of matchedRules) {

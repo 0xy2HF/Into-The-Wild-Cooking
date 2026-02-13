@@ -98,28 +98,54 @@ function IngredientForm({ onAdd, editingIngredient, onUpdate, onCancelEdit }) {
       <div className="form-row">
         <div className="form-group">
           <label htmlFor="time">Time</label>
-          <input
-            id="time"
-            type="text"
-            value={ingredient.time}
-            onChange={(e) => handleChange('time', e.target.value)}
-            placeholder="00:00:30"
-            pattern="\d{2}:\d{2}:\d{2}"
-            title="Format: HH:MM:SS"
-          />
+          <label className="checkbox-label checkbox-label-small">
+            <input
+              type="checkbox"
+              checked={ingredient.time === null}
+              onChange={(e) =>
+                handleChange('time', e.target.checked ? null : '00:00:30')
+              }
+            />
+            None
+          </label>
+          {ingredient.time !== null && (
+            <input
+              id="time"
+              type="text"
+              value={ingredient.time}
+              onChange={(e) => handleChange('time', e.target.value)}
+              placeholder="00:00:30"
+              pattern="\d{2}:\d{2}:\d{2}"
+              title="Format: HH:MM:SS"
+            />
+          )}
         </div>
 
         <div className="form-group">
-          <label htmlFor="boost">Boost (x{ingredient.boost})</label>
-          <input
-            id="boost"
-            type="number"
-            min="0.1"
-            max="10"
-            step="0.1"
-            value={ingredient.boost}
-            onChange={(e) => handleChange('boost', Number(e.target.value))}
-          />
+          <label htmlFor="boost">
+            Boost {ingredient.boost !== null ? `(x${ingredient.boost})` : ''}
+          </label>
+          <label className="checkbox-label checkbox-label-small">
+            <input
+              type="checkbox"
+              checked={ingredient.boost === null}
+              onChange={(e) =>
+                handleChange('boost', e.target.checked ? null : 1.0)
+              }
+            />
+            None
+          </label>
+          {ingredient.boost !== null && (
+            <input
+              id="boost"
+              type="number"
+              min="0.1"
+              max="10"
+              step="0.1"
+              value={ingredient.boost}
+              onChange={(e) => handleChange('boost', Number(e.target.value))}
+            />
+          )}
         </div>
       </div>
 

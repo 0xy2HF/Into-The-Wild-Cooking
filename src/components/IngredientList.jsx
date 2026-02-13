@@ -48,11 +48,15 @@ function IngredientList({ ingredients, onEdit, onDelete }) {
                     ))}
                   </div>
                 </td>
-                <td className="sheet-mono">{ing.time}</td>
+                <td className="sheet-mono">
+                  {ing.time !== null ? ing.time : <span className="sheet-none">None</span>}
+                </td>
                 <td>
-                  {ing.boost !== 1 && (
+                  {ing.boost === null ? (
+                    <span className="sheet-none">None</span>
+                  ) : ing.boost !== 1 ? (
                     <span className="boost-display">x{ing.boost}</span>
-                  )}
+                  ) : null}
                 </td>
                 <td>
                   <div className="sheet-actions">
