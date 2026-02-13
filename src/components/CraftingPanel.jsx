@@ -226,20 +226,6 @@ function CraftingPanel({ ingredients, rules }) {
                 <span className="craft-stat-value craft-stat-final">{craft.finalFoodPoints}</span>
               </div>
               <div className="craft-stat">
-                <span className="craft-stat-label">Time</span>
-                <span className="craft-stat-value craft-stat-mono">
-                  {craft.finalTime ? (
-                    <>
-                      <s>{craft.totalTime}</s> {craft.finalTime}
-                      {craft.timeBoost && <span className="craft-time-detail"> x{craft.timeBoost}</span>}
-                      {craft.timeDivider && <span className="craft-time-detail"> /{craft.timeDivider}</span>}
-                    </>
-                  ) : (
-                    craft.totalTime
-                  )}
-                </span>
-              </div>
-              <div className="craft-stat">
                 <span className="craft-stat-label">Rule Multiplier</span>
                 <span className={`craft-stat-value ${craft.ruleMultiplier >= 1 ? 'craft-bonus' : 'craft-malus'}`}>
                   x{craft.ruleMultiplier}
@@ -264,9 +250,20 @@ function CraftingPanel({ ingredients, rules }) {
             {craft.effects.length > 0 && (
               <div className="craft-effects">
                 <span className="craft-stat-label">Effects</span>
-                <div className="tag-display">
+                <div className="craft-effect-rows">
                   {craft.effects.map((e, i) => (
-                    <span key={i} className="tag tag-effect">{e}</span>
+                    <div key={i} className="craft-effect-row">
+                      <span className="tag tag-effect">{e}</span>
+                      <span className="craft-effect-time craft-stat-mono">
+                        {craft.finalTime || craft.totalTime}
+                        {craft.finalTime && (
+                          <span className="craft-time-detail">
+                            {craft.timeBoost && ` x${craft.timeBoost}`}
+                            {craft.timeDivider && ` /${craft.timeDivider}`}
+                          </span>
+                        )}
+                      </span>
+                    </div>
                   ))}
                 </div>
               </div>

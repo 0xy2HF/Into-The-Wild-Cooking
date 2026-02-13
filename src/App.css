@@ -947,6 +947,23 @@
   margin-bottom: 0.35rem;
 }
 
+.craft-effect-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.craft-effect-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.craft-effect-time {
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
 .craft-matched-rules {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   padding-top: 0.75rem;
