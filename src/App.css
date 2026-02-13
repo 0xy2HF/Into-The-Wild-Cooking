@@ -643,3 +643,198 @@
   background: rgba(255, 68, 68, 0.15);
   color: #ff6666;
 }
+
+/* ===== Full-width layout (Craft tab) ===== */
+.app-main-full {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* ===== Crafting Panel ===== */
+.crafting-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .crafting-panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+.craft-slots h2,
+.craft-result-panel h2 {
+  margin: 0 0 1rem;
+  font-size: 1.2rem;
+}
+
+.slots-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.craft-slot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+
+.craft-slot-filled {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(100, 108, 255, 0.2);
+}
+
+.slot-number {
+  font-size: 0.7rem;
+  font-weight: 700;
+  opacity: 0.4;
+  width: 1.2em;
+  text-align: center;
+}
+
+.craft-slot select {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  color: inherit;
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.craft-slot select:focus {
+  outline: none;
+  border-color: #646cff;
+}
+
+.slot-info {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.slot-fp {
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0.6;
+}
+
+.tag-small {
+  font-size: 0.7rem;
+  padding: 0.05em 0.4em;
+}
+
+.craft-clear {
+  margin-top: 0.75rem;
+  width: 100%;
+}
+
+/* ===== Craft Result ===== */
+.craft-hint {
+  opacity: 0.4;
+  font-size: 0.9rem;
+}
+
+.craft-result {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.craft-recipe-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.craft-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.craft-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.craft-stat-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.5;
+}
+
+.craft-stat-value {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.craft-stat-final {
+  font-size: 1.2rem;
+  color: #646cff;
+}
+
+.craft-stat-mono {
+  font-family: monospace;
+}
+
+.craft-bonus {
+  color: #4caf50;
+}
+
+.craft-malus {
+  color: #ff6666;
+}
+
+.craft-effects {
+  margin-bottom: 1rem;
+}
+
+.craft-effects .craft-stat-label {
+  margin-bottom: 0.35rem;
+}
+
+.craft-matched-rules {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 0.75rem;
+}
+
+.craft-matched-rules .craft-stat-label {
+  margin-bottom: 0.4rem;
+}
+
+.craft-matched-rule {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.3rem 0;
+  font-size: 0.85rem;
+}
+
+.craft-no-rules {
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  opacity: 0.5;
+  font-style: italic;
+}

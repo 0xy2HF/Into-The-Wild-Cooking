@@ -3,6 +3,7 @@ import IngredientForm from './components/IngredientForm'
 import IngredientList from './components/IngredientList'
 import RuleBuilder from './components/RuleBuilder'
 import RuleList from './components/RuleList'
+import CraftingPanel from './components/CraftingPanel'
 import initialIngredients from './data/ingredients.json'
 import './App.css'
 
@@ -232,6 +233,12 @@ function App() {
         >
           Rules
         </button>
+        <button
+          className={`tab ${tab === 'craft' ? 'tab-active' : ''}`}
+          onClick={() => setTab('craft')}
+        >
+          Craft
+        </button>
       </nav>
 
       {tab === 'ingredients' && (
@@ -273,6 +280,12 @@ function App() {
               onDelete={handleDeleteRule}
             />
           </section>
+        </main>
+      )}
+
+      {tab === 'craft' && (
+        <main className="app-main-full">
+          <CraftingPanel ingredients={ingredients} rules={rules} />
         </main>
       )}
     </div>
