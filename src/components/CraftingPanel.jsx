@@ -96,9 +96,18 @@ function computeCraft(selected, matchedRecipes, matchedModifiers) {
     effectLevel && effectLevel !== 1 ? `${e} ${effectLevel}` : e
   )
 
+  const bestRecipe = matchedRecipes.length > 0
+    ? matchedRecipes.reduce((best, r) => {
+        const rPrio = r.priority || 0
+        const bestPrio = best.priority || 0
+        if (rPrio !== bestPrio) return rPrio > bestPrio ? r : best
+        return r.result.multiplier > best.result.multiplier ? r : best
+      })
+    : null
+
   let ruleMultiplier = 1
-  for (const rule of matchedRecipes) {
-    ruleMultiplier *= rule.result.multiplier
+  if (bestRecipe) {
+    ruleMultiplier = bestRecipe.result.multiplier
   }
 
   let modifierMultiplier = 1
@@ -115,12 +124,6 @@ function computeCraft(selected, matchedRecipes, matchedModifiers) {
   const boostedTime = Math.round(totalTime * timeBoost)
   const finalTime = Math.round(boostedTime / timeDivider)
 
-  const bestRecipe = matchedRecipes.length > 0
-    ? matchedRecipes.reduce((best, r) =>
-        r.result.multiplier > best.result.multiplier ? r : best
-      )
-    : null
-
   const timeModified = timeBoost !== 1 || timeDivider > 1
 
   return {
@@ -136,6 +139,7 @@ function computeCraft(selected, matchedRecipes, matchedModifiers) {
     modifierMultiplier: Math.round(modifierMultiplier * 100) / 100,
     finalMultiplier: Math.round(finalMultiplier * 100) / 100,
     recipeName: bestRecipe?.result.recipeName || 'Suspicious Meal',
+    bestRecipeId: bestRecipe?.id || null,
   }
 }
 
@@ -283,14 +287,17 @@ function CraftingPanel({ ingredients, rules }) {
             {matchedRecipes.length > 0 && (
               <div className="craft-matched-rules">
                 <span className="craft-stat-label">Matched Rules</span>
-                {matchedRecipes.map((r) => (
-                  <div key={r.id} className="craft-matched-rule">
-                    <span>{r.name}</span>
-                    <span className={`multiplier-badge ${r.result.multiplier >= 1 ? 'multiplier-bonus' : 'multiplier-malus'}`}>
-                      x{r.result.multiplier}
-                    </span>
-                  </div>
-                ))}
+                {matchedRecipes.map((r) => {
+                  const isWinner = craft.bestRecipeId === r.id
+                  return (
+                    <div key={r.id} className={`craft-matched-rule ${isWinner ? 'craft-matched-rule-active' : 'craft-matched-rule-inactive'}`}>
+                      <span>{r.name} {isWinner && matchedRecipes.length > 1 ? '★' : ''}</span>
+                      <span className={`multiplier-badge ${r.result.multiplier >= 1 ? 'multiplier-bonus' : 'multiplier-malus'}`}>
+                        x{r.result.multiplier}
+                      </span>
+                    </div>
+                  )
+                })}
               </div>
             )}
 

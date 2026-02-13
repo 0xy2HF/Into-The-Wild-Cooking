@@ -22,6 +22,7 @@ function emptyRule() {
     name: '',
     kind: 'recipe',
     conditions: [emptyCondition()],
+    priority: 0,
     result: { recipeName: '', multiplier: 1 },
   }
 }
@@ -336,6 +337,20 @@ function RuleBuilder({ onSave, editingRule, onCancelEdit, ingredients }) {
           </div>
         </div>
       </div>
+
+      {rule.kind === 'recipe' && (
+        <div className="form-group">
+          <label>Priority <span className="form-hint">(higher wins when multiple recipes match)</span></label>
+          <input
+            type="number"
+            min="0"
+            value={rule.priority || 0}
+            onChange={(e) =>
+              setRule((p) => ({ ...p, priority: Number(e.target.value) }))
+            }
+          />
+        </div>
+      )}
 
       <div className="form-actions">
         <button className="btn-primary" type="submit">

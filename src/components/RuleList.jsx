@@ -65,6 +65,8 @@ function RuleList({ rules, onEdit, onDelete }) {
           return dir * (a.kind || 'recipe').localeCompare(b.kind || 'recipe')
         case 'recipe':
           return dir * (a.result.recipeName || '').localeCompare(b.result.recipeName || '')
+        case 'priority':
+          return dir * ((a.priority || 0) - (b.priority || 0))
         case 'multiplier':
           return dir * (a.result.multiplier - b.result.multiplier)
         default:
@@ -94,6 +96,7 @@ function RuleList({ rules, onEdit, onDelete }) {
               <SortTh label="Kind" sortKey="kind" sort={sort} onSort={handleSort} />
               <th>Conditions</th>
               <SortTh label="Recipe" sortKey="recipe" sort={sort} onSort={handleSort} />
+              <SortTh label="Priority" sortKey="priority" sort={sort} onSort={handleSort} />
               <SortTh label="Multiplier" sortKey="multiplier" sort={sort} onSort={handleSort} />
               <th>Actions</th>
             </tr>
@@ -127,6 +130,13 @@ function RuleList({ rules, onEdit, onDelete }) {
                     <span className="sheet-none">--</span>
                   ) : (
                     rule.result.recipeName
+                  )}
+                </td>
+                <td>
+                  {rule.kind === 'modifier' ? (
+                    <span className="sheet-none">--</span>
+                  ) : (
+                    <span className="priority-badge">{rule.priority || 0}</span>
                   )}
                 </td>
                 <td>
