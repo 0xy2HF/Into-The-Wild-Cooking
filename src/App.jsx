@@ -5,6 +5,7 @@ import RuleBuilder from './components/RuleBuilder'
 import RuleList from './components/RuleList'
 import CraftingPanel from './components/CraftingPanel'
 import initialIngredients from './data/ingredients.json'
+import initialRules from './data/rules.json'
 import './App.css'
 
 const STORAGE_KEY = 'wild-cooking-ingredients'
@@ -27,7 +28,7 @@ function loadRules() {
   if (stored) {
     return JSON.parse(stored)
   }
-  return []
+  return initialRules
 }
 
 function saveRules(rules) {
