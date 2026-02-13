@@ -1,4 +1,387 @@
 {
-  "version": 0,
-  "data": []
+  "version": 1,
+  "data": [
+    {
+      "id": "4c1376d8-a44b-4dd8-a6c2-dd06e9bd4965",
+      "name": "Disgusting Rule",
+      "kind": "recipe",
+      "conditions": [
+        {
+          "type": "more_unappetising",
+          "value": "",
+          "count": 1
+        }
+      ],
+      "result": {
+        "recipeName": "Disgusting Dish",
+        "multiplier": 0.5
+      },
+      "priority": 1
+    },
+    {
+      "id": "a509cb43-f795-4612-9fed-f725aeba49a1",
+      "name": "Abomination Rule",
+      "kind": "recipe",
+      "conditions": [
+        {
+          "type": "all_unappetising",
+          "value": "",
+          "count": 1
+        }
+      ],
+      "result": {
+        "recipeName": "Abomination",
+        "multiplier": 0.2
+      },
+      "priority": 2
+    },
+    {
+      "id": "eba7d62f-606d-4937-8afd-17ffc33ad77f",
+      "name": "Risotto Rule",
+      "kind": "recipe",
+      "conditions": [
+        {
+          "type": "has_ingredient",
+          "value": "Rice",
+          "count": 1
+        },
+        {
+          "type": "has_type",
+          "value": "Meat",
+          "count": 1
+        },
+        {
+          "type": "has_type",
+          "value": "Mushroom",
+          "count": 1
+        }
+      ],
+      "result": {
+        "recipeName": "Risotto",
+        "multiplier": 1.3
+      },
+      "priority": 3
+    },
+    {
+      "id": "a0407d38-5402-4788-9949-54ff28148532",
+      "name": "Vegetable Pie Rule",
+      "kind": "recipe",
+      "conditions": [
+        {
+          "type": "has_ingredient",
+          "value": "Egg",
+          "count": 1
+        },
+        {
+          "type": "has_ingredient",
+          "value": "Milk",
+          "count": 1
+        },
+        {
+          "type": "has_ingredient",
+          "value": "Wheat",
+          "count": 1
+        },
+        {
+          "type": "has_type",
+          "value": "Vegetable",
+          "count": 1
+        }
+      ],
+      "priority": 4,
+      "result": {
+        "recipeName": "Vegetable Pie",
+        "multiplier": 1.5
+      }
+    },
+    {
+      "id": "c83d86c7-d7ca-464f-9888-78f3e45a7c5a",
+      "name": "Meat Pie Rule",
+      "kind": "recipe",
+      "conditions": [
+        {
+          "type": "has_ingredient",
+          "value": "Egg",
+          "count": 1
+        },
+        {
+          "type": "has_ingredient",
+          "value": "Wheat",
+          "count": 1
+        },
+        {
+          "type": "has_ingredient",
+          "value": "Milk",
+          "count": 1
+        },
+        {
+          "type": "has_type",
+          "value": "Meat",
+          "count": 1
+        }
+      ],
+      "priority": 5,
+      "result": {
+        "recipeName": "Meat Pie",
+        "multiplier": 1.5
+      }
+    },
+    {
+      "id": "27761494-e415-4346-aca3-f44176565560",
+      "name": "Fruit Pie Rule",
+      "kind": "recipe",
+      "conditions": [
+        {
+          "type": "has_ingredient",
+          "value": "Egg",
+          "count": 1
+        },
+        {
+          "type": "has_ingredient",
+          "value": "Milk",
+          "count": 1
+        },
+        {
+          "type": "has_ingredient",
+          "value": "Wheat",
+          "count": 1
+        },
+        {
+          "type": "has_type",
+          "value": "Fruit",
+          "count": 1
+        }
+      ],
+      "priority": 6,
+      "result": {
+        "recipeName": "Fruit Pie",
+        "multiplier": 1.5
+      }
+    },
+    {
+      "id": "ccbc253d-f798-48c6-850d-e52dd631893b",
+      "name": "Meat Stew Rule",
+      "kind": "recipe",
+      "conditions": [
+        {
+          "type": "has_type",
+          "value": "Meat",
+          "count": 1
+        },
+        {
+          "type": "has_type",
+          "value": "Vegetable",
+          "count": 1
+        },
+        {
+          "type": "has_type",
+          "value": "Mushroom",
+          "count": 1
+        }
+      ],
+      "priority": 7,
+      "result": {
+        "recipeName": "Meat Stew",
+        "multiplier": 1.4
+      }
+    },
+    {
+      "id": "1b355e1c-c24e-45e0-8e2b-bdf665f48c21",
+      "name": "Fish Stew Rule",
+      "kind": "recipe",
+      "conditions": [
+        {
+          "type": "has_type",
+          "value": "Fish",
+          "count": 1
+        },
+        {
+          "type": "has_type",
+          "value": "Vegetable",
+          "count": 1
+        },
+        {
+          "type": "has_type",
+          "value": "Mushroom",
+          "count": 1
+        }
+      ],
+      "priority": 8,
+      "result": {
+        "recipeName": "Fish Stew",
+        "multiplier": 1.4
+      }
+    },
+    {
+      "id": "7adc278a-8dcb-4c1c-8a23-267cb40aa562",
+      "name": "Fish Stick Rule",
+      "kind": "recipe",
+      "conditions": [
+        {
+          "type": "has_type",
+          "value": "Fish",
+          "count": 3
+        }
+      ],
+      "priority": 9,
+      "result": {
+        "recipeName": "Fish Stick",
+        "multiplier": 1.3
+      }
+    },
+    {
+      "id": "a06bfdb5-1927-460c-9b21-c2a577a062e8",
+      "name": "Meet Stick Rule",
+      "conditions": [
+        {
+          "type": "has_type",
+          "value": "Meat",
+          "count": 3
+        }
+      ],
+      "result": {
+        "recipeName": "Meet Stick",
+        "multiplier": 1.3
+      },
+      "priority": 10,
+      "kind": "recipe"
+    },
+    {
+      "id": "d6d8a9c0-d08b-4588-8366-ca76d41b4ba6",
+      "name": "Mushroom Stick Rule",
+      "kind": "recipe",
+      "conditions": [
+        {
+          "type": "has_type",
+          "value": "Mushroom",
+          "count": 3
+        }
+      ],
+      "priority": 11,
+      "result": {
+        "recipeName": "Mushroom Stick",
+        "multiplier": 1.3
+      }
+    },
+    {
+      "id": "d6b0b9fe-6479-4490-a605-0ea398a6d0f4",
+      "name": "Vegetable Stick Rule",
+      "kind": "recipe",
+      "conditions": [
+        {
+          "type": "has_type",
+          "value": "Vegetable",
+          "count": 3
+        }
+      ],
+      "result": {
+        "recipeName": "Vegetable Stick",
+        "multiplier": 1.3
+      },
+      "priority": 12
+    },
+    {
+      "id": "03d96845-d7a0-49a4-93b9-10fab68954f3",
+      "name": "Fruit Compote Rule",
+      "kind": "recipe",
+      "conditions": [
+        {
+          "type": "has_type",
+          "value": "Fruit",
+          "count": 3
+        }
+      ],
+      "result": {
+        "recipeName": "Fruit Compote",
+        "multiplier": 1.2
+      },
+      "priority": 13
+    },
+    {
+      "id": "bc4473c1-d6a6-4edf-a5e4-8067279b7977",
+      "name": "Un-Appetising Malus",
+      "kind": "modifier",
+      "conditions": [],
+      "result": {
+        "recipeName": "",
+        "multiplier": 0.9,
+        "perCount": "each_unappetising"
+      }
+    },
+    {
+      "id": "d7e1db7a-51c8-47b4-91f3-b5afe510951c",
+      "name": "Too Salty",
+      "kind": "modifier",
+      "conditions": [],
+      "result": {
+        "recipeName": "",
+        "multiplier": 0.8,
+        "perCount": "threshold_ingredient",
+        "threshold": 2,
+        "ingredient": "Salt",
+        "timeDivider": 2
+      }
+    },
+    {
+      "id": "7fe21baa-c79b-46f1-9038-3f5c13cb23da",
+      "name": "Too Sweet",
+      "kind": "modifier",
+      "conditions": [],
+      "result": {
+        "recipeName": "",
+        "multiplier": 0.8,
+        "perCount": "threshold_ingredient",
+        "threshold": 2,
+        "ingredient": "Sugar",
+        "timeDivider": 2
+      }
+    },
+    {
+      "id": "c2636ecd-ad54-4f52-88be-aa519465862e",
+      "name": "Flower Salad Rule",
+      "kind": "recipe",
+      "conditions": [
+        {
+          "type": "has_type",
+          "value": "Flower",
+          "count": 3
+        }
+      ],
+      "priority": 14,
+      "result": {
+        "recipeName": "Flower Salad",
+        "multiplier": 1.1
+      }
+    },
+    {
+      "id": "8f29238c-a47e-4cf1-8f82-4435c3b75947",
+      "name": "Indigestible Meat Rule",
+      "kind": "modifier",
+      "conditions": [],
+      "priority": 0,
+      "result": {
+        "recipeName": "",
+        "multiplier": 0.7,
+        "perCount": "threshold_type",
+        "threshold": 4,
+        "typeName": "Meat",
+        "timeDivider": 1
+      }
+    },
+    {
+      "id": "8dcfb9eb-1070-4af5-861f-bebea3ef5ed5",
+      "name": "Indigestible Fish Rule",
+      "kind": "modifier",
+      "conditions": [],
+      "priority": 0,
+      "result": {
+        "recipeName": "",
+        "multiplier": 0.7,
+        "perCount": "threshold_type",
+        "threshold": 4,
+        "typeName": "Fish",
+        "timeDivider": 1
+      }
+    }
+  ]
 }

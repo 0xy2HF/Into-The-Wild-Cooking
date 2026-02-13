@@ -1,4 +1,664 @@
 {
-  "version": 0,
-  "data": []
+  "version": 2,
+  "data": [
+    {
+      "name": "Raw Chicken",
+      "types": [
+        "Meat"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 6,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "id": "5cd10308-4420-4d29-873a-249d73ad94ed"
+    },
+    {
+      "name": "Wheat",
+      "types": [
+        "Ingredient"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 4,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "b9d6312b-8258-480b-95e5-bd9db8e89a4b"
+    },
+    {
+      "name": "Milk",
+      "types": [
+        "Ingredient"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 4,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "b4290591-7115-4d10-8ebf-dc577aa3796a"
+    },
+    {
+      "name": "Cacao Bean",
+      "types": [
+        "Ingredient"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 1,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "0cc5ab14-13a9-4d42-9c19-14a96d437d1a"
+    },
+    {
+      "name": "Rice",
+      "types": [
+        "Ingredient"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 5,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "89540fdf-20e6-4a39-bf98-a492d58c9eb7"
+    },
+    {
+      "name": "Sugar",
+      "types": [
+        "Condiment"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 1,
+      "effects": [],
+      "time": null,
+      "boost": 1.5,
+      "boostTarget": "time",
+      "id": "e1d02b58-67db-44d8-b6c2-4d85c10af16a"
+    },
+    {
+      "name": "Salt",
+      "types": [
+        "Condiment"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 1,
+      "effects": [],
+      "time": null,
+      "boost": 2,
+      "boostTarget": "time",
+      "id": "86dae812-4abf-4e41-9c43-4f364efcd432"
+    },
+    {
+      "name": "Honeycomb",
+      "types": [
+        "Condiment"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 1,
+      "effects": [],
+      "time": null,
+      "boost": 2.5,
+      "boostTarget": "time",
+      "id": "aa0895d0-9de8-4b76-b775-d0a6a0e74d68"
+    },
+    {
+      "name": "Beetroot",
+      "types": [
+        "Vegetable"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 1,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "3a2fdf98-23b6-4f9a-92f2-0a8449f26020"
+    },
+    {
+      "name": "Potato",
+      "types": [
+        "Vegetable"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 5,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "781b4176-5e28-4534-9fa3-664629662216"
+    },
+    {
+      "name": "Carrot",
+      "types": [
+        "Vegetable"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 4,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "3094d58b-2d6f-4276-badf-0bb23670f03d"
+    },
+    {
+      "name": "Poisonous Potato",
+      "types": [
+        "Vegetable"
+      ],
+      "appetisingScore": false,
+      "foodPoint": 1,
+      "effects": [
+        "Poison"
+      ],
+      "time": "00:00:15",
+      "boost": null,
+      "boostTarget": "time",
+      "id": "bd8ed3aa-16e5-4327-abb2-ba3eb2c28844"
+    },
+    {
+      "name": "Dried Kelp",
+      "types": [
+        "Vegetable"
+      ],
+      "appetisingScore": false,
+      "foodPoint": 1,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "07261546-dc0b-45d6-8d93-8ebecaad8347"
+    },
+    {
+      "name": "Pumpkin Slice",
+      "types": [
+        "Vegetable"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 4,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "6816267b-7c9b-4789-98e7-e76dcf809553"
+    },
+    {
+      "name": "Apple",
+      "types": [
+        "Fruit"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 4,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "e6e68445-bba9-4aed-a662-b2f5bc3d7e81"
+    },
+    {
+      "name": "Glistering Melon Slice",
+      "types": [
+        "Fruit"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 2,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "551f6f3d-d467-4d57-b882-3cb0a29aba75"
+    },
+    {
+      "name": "Melon Slice",
+      "types": [
+        "Fruit"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 2,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "0c06626c-2cf3-47a2-bfbd-e10c6b91e07c"
+    },
+    {
+      "name": "Sweet Berries",
+      "types": [
+        "Fruit"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 2,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "ab99d9f9-2775-4a37-8fd7-534c09920b8c"
+    },
+    {
+      "name": "Bramble Berries",
+      "types": [
+        "Fruit"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 2,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "56854939-4f64-44e1-bc60-bc2af7f96905"
+    },
+    {
+      "name": "Glow Berries",
+      "types": [
+        "Fruit"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 2,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "00d32e81-30a1-40cf-b235-51d43bdb9d40"
+    },
+    {
+      "name": "Opuntia Fruit",
+      "types": [
+        "Fruit"
+      ],
+      "appetisingScore": false,
+      "foodPoint": 2,
+      "effects": [],
+      "time": null,
+      "boost": 1.5,
+      "boostTarget": "time",
+      "id": "01dc34af-062b-47fc-891e-69dc8cecaecb"
+    },
+    {
+      "name": "Euphorbia Fruits",
+      "types": [
+        "Fruit"
+      ],
+      "appetisingScore": false,
+      "foodPoint": 2,
+      "effects": [
+        "Slowness"
+      ],
+      "time": "00:00:30",
+      "boost": null,
+      "boostTarget": "time",
+      "id": "1e5357b1-1908-4737-ae74-8138afd606ab"
+    },
+    {
+      "name": "Raw Porkchop",
+      "types": [
+        "Meat"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 8,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "65c903a7-9a1c-4e8a-9d80-0cd30986b620"
+    },
+    {
+      "name": "Raw Beef",
+      "types": [
+        "Meat"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 8,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "29e8bafc-8594-44cf-bc97-c75290cb4967"
+    },
+    {
+      "name": "Raw Mutton",
+      "types": [
+        "Meat"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 6,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "c56c7ed0-590f-4493-8aa4-6a912cf128f8"
+    },
+    {
+      "name": "Raw Rabbit",
+      "types": [
+        "Meat"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 5,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "bb655eab-2229-410e-bd21-f7cc2b9a7c8f"
+    },
+    {
+      "name": "Spider Eye",
+      "types": [
+        "Meat"
+      ],
+      "appetisingScore": false,
+      "foodPoint": 2,
+      "effects": [
+        "Poison"
+      ],
+      "time": "00:00:05",
+      "boost": null,
+      "boostTarget": "time",
+      "id": "24c3c397-71cb-4e76-824a-76cd231caa43"
+    },
+    {
+      "name": "Rotten Flesh",
+      "types": [
+        "Meat"
+      ],
+      "appetisingScore": false,
+      "foodPoint": 4,
+      "effects": [
+        "Hunger"
+      ],
+      "time": "00:00:30",
+      "boost": null,
+      "boostTarget": "time",
+      "id": "b188f25d-f8c7-4f29-98a9-4dd061b9d2ce"
+    },
+    {
+      "name": "Raw Cod",
+      "types": [
+        "Fish"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 5,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "eeae7821-4dfc-4252-a3df-8f18d23ed667"
+    },
+    {
+      "name": "Raw Salmon",
+      "types": [
+        "Fish"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 6,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "dd989dcf-4cb0-4519-9648-6013764ecb11"
+    },
+    {
+      "name": "Sea Urchin",
+      "types": [
+        "Fish"
+      ],
+      "appetisingScore": false,
+      "foodPoint": 4,
+      "effects": [
+        "Water Breathing"
+      ],
+      "time": "00:00:30",
+      "boost": null,
+      "boostTarget": "time",
+      "id": "a55a2c16-f225-4254-877a-8f13e7c992df"
+    },
+    {
+      "name": "Tropical Fish",
+      "types": [
+        "Fish"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 1,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "e723357f-3ae2-44a6-ac90-a14a0f4a8d90"
+    },
+    {
+      "name": "Puffer Fish",
+      "types": [
+        "Fish"
+      ],
+      "appetisingScore": false,
+      "foodPoint": 4,
+      "effects": [
+        "Poison"
+      ],
+      "time": "00:00:30",
+      "boost": null,
+      "boostTarget": "time",
+      "id": "10f68c3a-3ede-413c-933e-7ad7b1780059"
+    },
+    {
+      "name": "Jelly Fish",
+      "types": [
+        "Fish"
+      ],
+      "appetisingScore": false,
+      "foodPoint": 4,
+      "effects": [
+        "Resistance"
+      ],
+      "time": "00:00:20",
+      "boost": null,
+      "boostTarget": "time",
+      "id": "ddd3cbe5-83ab-4f1f-8612-02b309bba5f9"
+    },
+    {
+      "name": "Brown Mushroom",
+      "types": [
+        "Mushroom"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 2,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "567ede6a-31ad-4c14-b7bc-1680e94f1989"
+    },
+    {
+      "name": "Red Mushroom",
+      "types": [
+        "Mushroom"
+      ],
+      "appetisingScore": false,
+      "foodPoint": 2,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "0d0ae462-22b6-498e-bc27-7ab034f1b8b4"
+    },
+    {
+      "name": "Crimson Mushroom",
+      "types": [
+        "Mushroom"
+      ],
+      "appetisingScore": false,
+      "foodPoint": 2,
+      "effects": [
+        "Fire Resistance"
+      ],
+      "time": "00:00:30",
+      "boost": null,
+      "boostTarget": "time",
+      "id": "7bf68156-0bd5-4644-9db9-9f3b60124281"
+    },
+    {
+      "name": "Warped Fungus",
+      "types": [
+        "Mushroom"
+      ],
+      "appetisingScore": false,
+      "foodPoint": 2,
+      "effects": [
+        "Darkness"
+      ],
+      "time": "00:00:30",
+      "boost": null,
+      "boostTarget": "time",
+      "id": "f8a8d6ca-ac92-4d34-8253-6dcde057a301"
+    },
+    {
+      "name": "Lepiota",
+      "types": [
+        "Mushroom"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 2,
+      "effects": [
+        "Absorption"
+      ],
+      "time": "00:00:30",
+      "boost": null,
+      "boostTarget": "time",
+      "id": "81edb716-d0a4-44aa-a3cb-3025526b0e5c"
+    },
+    {
+      "name": "Russula",
+      "types": [
+        "Mushroom"
+      ],
+      "appetisingScore": false,
+      "foodPoint": 2,
+      "effects": [
+        "Blindness"
+      ],
+      "time": "00:00:30",
+      "boost": null,
+      "boostTarget": "time",
+      "id": "14f5300d-6331-4aa4-9b47-352da09cb499"
+    },
+    {
+      "name": "Cep",
+      "types": [
+        "Mushroom"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 2,
+      "effects": [
+        "Regeneration"
+      ],
+      "time": "00:00:10",
+      "boost": null,
+      "boostTarget": "time",
+      "id": "e659d37f-cd88-4759-8472-411ae09fa1c9"
+    },
+    {
+      "name": "Lavender",
+      "types": [
+        "Flower"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 1,
+      "effects": [
+        "Haste"
+      ],
+      "time": "00:00:30",
+      "boost": null,
+      "boostTarget": "time",
+      "id": "b89559df-1b88-4b4e-8e52-22514e284603"
+    },
+    {
+      "name": "Clover",
+      "types": [
+        "Flower"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 1,
+      "effects": [
+        "Random"
+      ],
+      "time": "00:00:30",
+      "boost": null,
+      "boostTarget": "time",
+      "id": "30eda3fc-bc6c-4ce9-ba31-5304b38db062"
+    },
+    {
+      "name": "Lotus Flower",
+      "types": [
+        "Flower"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 1,
+      "effects": [
+        "Jump Boost"
+      ],
+      "time": "00:00:30",
+      "boost": null,
+      "boostTarget": "time",
+      "id": "ba6ca516-e616-4d65-a498-b9abc946fdc7"
+    },
+    {
+      "name": "Verbena Flower",
+      "types": [
+        "Flower"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 1,
+      "effects": [
+        "Insect Repellent"
+      ],
+      "time": "00:00:30",
+      "boost": null,
+      "boostTarget": "time",
+      "id": "7087fffc-4400-4e29-a7be-9e023abf249e"
+    },
+    {
+      "name": "Egg",
+      "types": [
+        "Meat"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 3,
+      "effects": [],
+      "time": null,
+      "boost": null,
+      "boostTarget": "time",
+      "id": "1ab63721-bcc4-456c-a2d0-ba7a95a5a78f"
+    },
+    {
+      "name": "Black Truffle",
+      "types": [
+        "Mushroom"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 2,
+      "effects": [
+        "Absorption"
+      ],
+      "time": "00:01:30",
+      "boost": 2,
+      "boostTarget": "effect",
+      "id": "7368270e-9f35-42cd-8f59-60f265a04d41"
+    },
+    {
+      "name": "White Truffle",
+      "types": [
+        "Mushroom"
+      ],
+      "appetisingScore": true,
+      "foodPoint": 2,
+      "effects": [
+        "Absorption"
+      ],
+      "time": "00:01:30",
+      "boost": 3,
+      "boostTarget": "time",
+      "id": "c51c75ab-b329-46e1-9913-0859cbe840a9"
+    }
+  ]
 }
