@@ -1,4 +1,31 @@
+import { useState, useMemo } from 'react'
+import { typeTagStyle } from '../utils/typeColor'
+
 function IngredientList({ ingredients, onEdit, onDelete }) {
+  const [search, setSearch] = useState('')
+  const [filterType, setFilterType] = useState('')
+
+  const allTypes = useMemo(
+    () => [...new Set(ingredients.flatMap((i) => i.types))].sort(),
+    [ingredients]
+  )
+
+  const filtered = useMemo(() => {
+    let list = ingredients
+    if (search) {
+      const q = search.toLowerCase()
+      list = list.filter(
+        (ing) =>
+          ing.name.toLowerCase().includes(q) ||
+          ing.effects.some((e) => e.toLowerCase().includes(q))
+      )
+    }
+    if (filterType) {
+      list = list.filter((ing) => ing.types.includes(filterType))
+    }
+    return list
+  }, [ingredients, search, filterType])
+
   if (ingredients.length === 0) {
     return (
       <div className="ingredient-list-empty">
@@ -9,7 +36,37 @@ function IngredientList({ ingredients, onEdit, onDelete }) {
 
   return (
     <div className="ingredient-list">
-      <h2>Ingredients ({ingredients.length})</h2>
+      <h2>Ingredients ({filtered.length}{filtered.length !== ingredients.length ? `/${ingredients.length}` : ''})</h2>
+
+      <div className="table-filters">
+        <input
+          type="text"
+          className="filter-search"
+          placeholder="Search name or effect..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <select
+          className="filter-select"
+          value={filterType}
+          onChange={(e) => setFilterType(e.target.value)}
+        >
+          <option value="">All types</option>
+          {allTypes.map((t) => (
+            <option key={t} value={t}>{t}</option>
+          ))}
+        </select>
+        {(search || filterType) && (
+          <button
+            className="btn-icon"
+            onClick={() => { setSearch(''); setFilterType('') }}
+            title="Clear filters"
+          >
+            ✕
+          </button>
+        )}
+      </div>
+
       <div className="sheet-wrapper">
         <table className="sheet">
           <thead>
@@ -25,13 +82,13 @@ function IngredientList({ ingredients, onEdit, onDelete }) {
             </tr>
           </thead>
           <tbody>
-            {ingredients.map((ing) => (
+            {filtered.map((ing) => (
               <tr key={ing.id}>
                 <td className="sheet-name">{ing.name}</td>
                 <td>
                   <div className="tag-display">
                     {ing.types.map((t, i) => (
-                      <span key={i} className="tag tag-type">{t}</span>
+                      <span key={i} className="tag tag-type" style={typeTagStyle(t)}>{t}</span>
                     ))}
                   </div>
                 </td>

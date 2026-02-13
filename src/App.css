@@ -308,6 +308,46 @@
   opacity: 0.5;
 }
 
+/* ===== Table Filters ===== */
+.table-filters {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.filter-search {
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  color: inherit;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+
+.filter-search:focus {
+  outline: none;
+  border-color: #646cff;
+}
+
+.filter-select {
+  padding: 0.4rem 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  color: inherit;
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #646cff;
+}
+
 /* ===== Sheet / Table ===== */
 .sheet-wrapper {
   overflow-x: auto;
@@ -378,8 +418,7 @@
 }
 
 .tag-type {
-  background: rgba(76, 175, 80, 0.2);
-  border-color: rgba(76, 175, 80, 0.3);
+  /* colors set via inline style from typeColor.js */
 }
 
 .tag-effect {

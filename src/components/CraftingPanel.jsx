@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { typeTagStyle } from '../utils/typeColor'
 
 const MAX_SLOTS = 5
 
@@ -191,7 +192,7 @@ function CraftingPanel({ ingredients, rules }) {
                 <div className="slot-info">
                   <span className="slot-fp">{slot.foodPoint} fp</span>
                   {slot.types.map((t, j) => (
-                    <span key={j} className="tag tag-type tag-small">{t}</span>
+                    <span key={j} className="tag tag-type tag-small" style={typeTagStyle(t)}>{t}</span>
                   ))}
                 </div>
               )}

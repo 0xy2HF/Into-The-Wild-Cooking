@@ -1,3 +1,5 @@
+import { useState, useMemo } from 'react'
+
 const CONDITION_LABELS = {
   has_ingredient: 'Has',
   has_type: 'Has type',
@@ -27,6 +29,25 @@ function formatCondition(cond) {
 }
 
 function RuleList({ rules, onEdit, onDelete }) {
+  const [search, setSearch] = useState('')
+  const [filterKind, setFilterKind] = useState('')
+
+  const filtered = useMemo(() => {
+    let list = rules
+    if (search) {
+      const q = search.toLowerCase()
+      list = list.filter(
+        (r) =>
+          r.name.toLowerCase().includes(q) ||
+          (r.result.recipeName && r.result.recipeName.toLowerCase().includes(q))
+      )
+    }
+    if (filterKind) {
+      list = list.filter((r) => (r.kind || 'recipe') === filterKind)
+    }
+    return list
+  }, [rules, search, filterKind])
+
   if (rules.length === 0) {
     return (
       <div className="ingredient-list-empty">
@@ -37,7 +58,36 @@ function RuleList({ rules, onEdit, onDelete }) {
 
   return (
     <div className="ingredient-list">
-      <h2>Rules ({rules.length})</h2>
+      <h2>Rules ({filtered.length}{filtered.length !== rules.length ? `/${rules.length}` : ''})</h2>
+
+      <div className="table-filters">
+        <input
+          type="text"
+          className="filter-search"
+          placeholder="Search name or recipe..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <select
+          className="filter-select"
+          value={filterKind}
+          onChange={(e) => setFilterKind(e.target.value)}
+        >
+          <option value="">All kinds</option>
+          <option value="recipe">Recipe</option>
+          <option value="modifier">Modifier</option>
+        </select>
+        {(search || filterKind) && (
+          <button
+            className="btn-icon"
+            onClick={() => { setSearch(''); setFilterKind('') }}
+            title="Clear filters"
+          >
+            ✕
+          </button>
+        )}
+      </div>
+
       <div className="sheet-wrapper">
         <table className="sheet">
           <thead>
@@ -51,7 +101,7 @@ function RuleList({ rules, onEdit, onDelete }) {
             </tr>
           </thead>
           <tbody>
-            {rules.map((rule) => (
+            {filtered.map((rule) => (
               <tr key={rule.id}>
                 <td className="sheet-name">{rule.name}</td>
                 <td>
