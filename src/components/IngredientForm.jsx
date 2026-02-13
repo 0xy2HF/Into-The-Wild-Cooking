@@ -4,7 +4,7 @@ import TagInput from './TagInput'
 const emptyIngredient = {
   name: '',
   types: [],
-  appetisingScore: 5,
+  appetisingScore: false,
   foodPoint: 0,
   effects: [],
   time: '00:00:30',
@@ -63,21 +63,15 @@ function IngredientForm({ onAdd, editingIngredient, onUpdate, onCancelEdit }) {
 
       <div className="form-row">
         <div className="form-group">
-          <label htmlFor="appetisingScore">
-            Appetising Score: {ingredient.appetisingScore}
+          <label htmlFor="appetisingScore" className="checkbox-label">
+            <input
+              id="appetisingScore"
+              type="checkbox"
+              checked={ingredient.appetisingScore}
+              onChange={(e) => handleChange('appetisingScore', e.target.checked)}
+            />
+            Appetising
           </label>
-          <input
-            id="appetisingScore"
-            type="range"
-            min="1"
-            max="10"
-            value={ingredient.appetisingScore}
-            onChange={(e) => handleChange('appetisingScore', Number(e.target.value))}
-          />
-          <div className="range-labels">
-            <span>1</span>
-            <span>10</span>
-          </div>
         </div>
 
         <div className="form-group">

@@ -424,19 +424,37 @@
   font-weight: 700;
 }
 
-.stat-bar {
-  height: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 2px;
-  margin-top: 0.3rem;
-  overflow: hidden;
+.stat-badge {
+  display: inline-block;
+  padding: 0.1em 0.6em;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
-.stat-bar-fill {
-  height: 100%;
-  background: #646cff;
-  border-radius: 2px;
-  transition: width 0.3s;
+.stat-badge-yes {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+}
+
+.stat-badge-no {
+  background: rgba(255, 68, 68, 0.15);
+  color: #ff6666;
+}
+
+/* ===== Checkbox ===== */
+.checkbox-label {
+  display: flex !important;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #646cff;
+  cursor: pointer;
 }
 
 /* ===== Card Footer ===== */

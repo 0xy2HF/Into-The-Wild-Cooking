@@ -48,13 +48,9 @@ function IngredientList({ ingredients, onEdit, onDelete }) {
               <div className="card-stats">
                 <div className="stat">
                   <span className="stat-label">Appetising</span>
-                  <span className="stat-value">{ing.appetisingScore}/10</span>
-                  <div className="stat-bar">
-                    <div
-                      className="stat-bar-fill"
-                      style={{ width: `${ing.appetisingScore * 10}%` }}
-                    />
-                  </div>
+                  <span className={`stat-badge ${ing.appetisingScore ? 'stat-badge-yes' : 'stat-badge-no'}`}>
+                    {ing.appetisingScore ? 'Yes' : 'No'}
+                  </span>
                 </div>
                 <div className="stat">
                   <span className="stat-label">Food Pt</span>
