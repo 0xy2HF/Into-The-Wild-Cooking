@@ -5,18 +5,31 @@ function TagInput({ tags, onTagsChange, placeholder, suggestions }) {
 
   const listId = suggestions?.length ? `tag-suggestions-${placeholder?.replace(/\s/g, '') || 'default'}` : undefined
 
-  const addTag = () => {
-    const trimmed = input.trim()
+  const availableSuggestions = suggestions?.filter((s) => !tags.includes(s)) || []
+
+  const tryAddTag = (value) => {
+    const trimmed = value.trim()
     if (trimmed && !tags.includes(trimmed)) {
       onTagsChange([...tags, trimmed])
       setInput('')
+      return true
+    }
+    return false
+  }
+
+  const handleChange = (e) => {
+    const value = e.target.value
+    if (availableSuggestions.includes(value)) {
+      tryAddTag(value)
+    } else {
+      setInput(value)
     }
   }
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault()
-      addTag()
+      tryAddTag(input)
     }
     if (e.key === 'Backspace' && input === '' && tags.length > 0) {
       onTagsChange(tags.slice(0, -1))
@@ -45,7 +58,7 @@ function TagInput({ tags, onTagsChange, placeholder, suggestions }) {
         <input
           type="text"
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={handleChange}
           onKeyDown={handleKeyDown}
           placeholder={tags.length === 0 ? placeholder : ''}
           className="tag-input"
@@ -53,15 +66,12 @@ function TagInput({ tags, onTagsChange, placeholder, suggestions }) {
         />
         {listId && (
           <datalist id={listId}>
-            {suggestions.filter((s) => !tags.includes(s)).map((s) => (
+            {availableSuggestions.map((s) => (
               <option key={s} value={s} />
             ))}
           </datalist>
         )}
       </div>
-      <button type="button" className="tag-add-btn" onClick={addTag}>
-        +
-      </button>
     </div>
   )
 }
