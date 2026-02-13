@@ -1,0 +1,146 @@
+import { useState } from 'react'
+import TagInput from './TagInput'
+
+const emptyIngredient = {
+  name: '',
+  types: [],
+  appetisingScore: 5,
+  foodPoint: 0,
+  effects: [],
+  time: '00:00:30',
+  boost: 1.0,
+}
+
+function IngredientForm({ onAdd, editingIngredient, onUpdate, onCancelEdit }) {
+  const [ingredient, setIngredient] = useState(editingIngredient || emptyIngredient)
+
+  const handleChange = (field, value) => {
+    setIngredient((prev) => ({ ...prev, [field]: value }))
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (!ingredient.name.trim()) return
+
+    if (editingIngredient) {
+      onUpdate({ ...ingredient })
+      onCancelEdit()
+    } else {
+      onAdd({
+        ...ingredient,
+        id: crypto.randomUUID(),
+      })
+    }
+    setIngredient(emptyIngredient)
+  }
+
+  const isEditing = !!editingIngredient
+
+  return (
+    <form className="ingredient-form" onSubmit={handleSubmit}>
+      <h2>{isEditing ? 'Edit Ingredient' : 'Add Ingredient'}</h2>
+
+      <div className="form-group">
+        <label htmlFor="name">Name</label>
+        <input
+          id="name"
+          type="text"
+          value={ingredient.name}
+          onChange={(e) => handleChange('name', e.target.value)}
+          placeholder="Ingredient name"
+          required
+        />
+      </div>
+
+      <div className="form-group">
+        <label>Type</label>
+        <TagInput
+          tags={ingredient.types}
+          onTagsChange={(tags) => handleChange('types', tags)}
+          placeholder="Add a type and press Enter"
+        />
+      </div>
+
+      <div className="form-row">
+        <div className="form-group">
+          <label htmlFor="appetisingScore">
+            Appetising Score: {ingredient.appetisingScore}
+          </label>
+          <input
+            id="appetisingScore"
+            type="range"
+            min="1"
+            max="10"
+            value={ingredient.appetisingScore}
+            onChange={(e) => handleChange('appetisingScore', Number(e.target.value))}
+          />
+          <div className="range-labels">
+            <span>1</span>
+            <span>10</span>
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="foodPoint">Food Point</label>
+          <input
+            id="foodPoint"
+            type="number"
+            min="0"
+            value={ingredient.foodPoint}
+            onChange={(e) => handleChange('foodPoint', Number(e.target.value))}
+          />
+        </div>
+      </div>
+
+      <div className="form-group">
+        <label>Effect</label>
+        <TagInput
+          tags={ingredient.effects}
+          onTagsChange={(tags) => handleChange('effects', tags)}
+          placeholder="Add an effect and press Enter"
+        />
+      </div>
+
+      <div className="form-row">
+        <div className="form-group">
+          <label htmlFor="time">Time</label>
+          <input
+            id="time"
+            type="text"
+            value={ingredient.time}
+            onChange={(e) => handleChange('time', e.target.value)}
+            placeholder="00:00:30"
+            pattern="\d{2}:\d{2}:\d{2}"
+            title="Format: HH:MM:SS"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="boost">Boost (x{ingredient.boost})</label>
+          <input
+            id="boost"
+            type="number"
+            min="0.1"
+            max="10"
+            step="0.1"
+            value={ingredient.boost}
+            onChange={(e) => handleChange('boost', Number(e.target.value))}
+          />
+        </div>
+      </div>
+
+      <div className="form-actions">
+        <button type="submit" className="btn-primary">
+          {isEditing ? 'Update' : 'Add Ingredient'}
+        </button>
+        {isEditing && (
+          <button type="button" className="btn-secondary" onClick={onCancelEdit}>
+            Cancel
+          </button>
+        )}
+      </div>
+    </form>
+  )
+}
+
+export default IngredientForm
