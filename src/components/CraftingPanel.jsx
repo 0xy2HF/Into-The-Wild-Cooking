@@ -193,7 +193,7 @@ function CraftingPanel({ ingredients, rules }) {
                 onChange={(e) => setSlot(i, e.target.value)}
               >
                 <option value="">Empty</option>
-                {ingredients.map((ing) => (
+                {[...ingredients].sort((a, b) => a.name.localeCompare(b.name)).map((ing) => (
                   <option key={ing.id} value={ing.id}>
                     {ing.name}
                   </option>
