@@ -10,13 +10,17 @@ import './App.css'
 
 const STORAGE_KEY = 'wild-cooking-ingredients'
 const RULES_STORAGE_KEY = 'wild-cooking-rules'
+const INGREDIENTS_VERSION_KEY = 'wild-cooking-ingredients-version'
+const RULES_VERSION_KEY = 'wild-cooking-rules-version'
 
 function loadIngredients() {
   const stored = localStorage.getItem(STORAGE_KEY)
-  if (stored) {
+  const localVersion = Number(localStorage.getItem(INGREDIENTS_VERSION_KEY) || 0)
+  if (stored && localVersion >= initialIngredients.version) {
     return JSON.parse(stored)
   }
-  return initialIngredients
+  localStorage.setItem(INGREDIENTS_VERSION_KEY, String(initialIngredients.version))
+  return initialIngredients.data
 }
 
 function saveIngredients(ingredients) {
@@ -25,10 +29,12 @@ function saveIngredients(ingredients) {
 
 function loadRules() {
   const stored = localStorage.getItem(RULES_STORAGE_KEY)
-  if (stored) {
+  const localVersion = Number(localStorage.getItem(RULES_VERSION_KEY) || 0)
+  if (stored && localVersion >= initialRules.version) {
     return JSON.parse(stored)
   }
-  return initialRules
+  localStorage.setItem(RULES_VERSION_KEY, String(initialRules.version))
+  return initialRules.data
 }
 
 function saveRules(rules) {
@@ -167,11 +173,16 @@ function App() {
   const handleExport = () => {
     const isRules = tab === 'rules'
     const data = isRules ? rules : ingredients
+    const versionKey = isRules ? RULES_VERSION_KEY : INGREDIENTS_VERSION_KEY
+    const currentVersion = Number(localStorage.getItem(versionKey) || 0)
+    const newVersion = currentVersion + 1
+    localStorage.setItem(versionKey, String(newVersion))
+    const exportData = { version: newVersion, data }
     const now = new Date()
     const timestamp = now.toISOString().slice(0, 19).replace(/[T:]/g, '-')
     const prefix = isRules ? 'rules' : 'ingredients'
     const filename = `${prefix}-${timestamp}.json`
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], {
       type: 'application/json',
     })
     const url = URL.createObjectURL(blob)
@@ -188,12 +199,26 @@ function App() {
     const reader = new FileReader()
     reader.onload = (event) => {
       const imported = JSON.parse(event.target.result)
+      let items
+      let version
       if (Array.isArray(imported)) {
-        if (tab === 'rules') {
-          setRules(imported)
-        } else {
-          setIngredients(imported)
-        }
+        items = imported
+        version = null
+      } else if (imported && Array.isArray(imported.data)) {
+        items = imported.data
+        version = imported.version
+      } else {
+        return
+      }
+      const isRules = tab === 'rules'
+      if (isRules) {
+        setRules(items)
+      } else {
+        setIngredients(items)
+      }
+      if (version != null) {
+        const versionKey = isRules ? RULES_VERSION_KEY : INGREDIENTS_VERSION_KEY
+        localStorage.setItem(versionKey, String(version))
       }
     }
     reader.readAsText(file)
