@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react'
 import IngredientForm from './components/IngredientForm'
 import IngredientList from './components/IngredientList'
+import RuleBuilder from './components/RuleBuilder'
+import RuleList from './components/RuleList'
 import initialIngredients from './data/ingredients.json'
 import './App.css'
 
 const STORAGE_KEY = 'wild-cooking-ingredients'
+const RULES_STORAGE_KEY = 'wild-cooking-rules'
 
 function loadIngredients() {
   const stored = localStorage.getItem(STORAGE_KEY)
@@ -16,6 +19,18 @@ function loadIngredients() {
 
 function saveIngredients(ingredients) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(ingredients))
+}
+
+function loadRules() {
+  const stored = localStorage.getItem(RULES_STORAGE_KEY)
+  if (stored) {
+    return JSON.parse(stored)
+  }
+  return []
+}
+
+function saveRules(rules) {
+  localStorage.setItem(RULES_STORAGE_KEY, JSON.stringify(rules))
 }
 
 function compressData(data) {
@@ -50,10 +65,17 @@ function App() {
   const [editingIngredient, setEditingIngredient] = useState(null)
   const [sharedIngredients, setSharedIngredients] = useState(getSharedIngredients)
   const [copySuccess, setCopySuccess] = useState(false)
+  const [tab, setTab] = useState('ingredients')
+  const [rules, setRules] = useState(loadRules)
+  const [editingRule, setEditingRule] = useState(null)
 
   useEffect(() => {
     saveIngredients(ingredients)
   }, [ingredients])
+
+  useEffect(() => {
+    saveRules(rules)
+  }, [rules])
 
   const handleAdd = (ingredient) => {
     setIngredients((prev) => [...prev, ingredient])
@@ -72,6 +94,25 @@ function App() {
 
   const handleEdit = (ingredient) => {
     setEditingIngredient(ingredient)
+  }
+
+  const handleSaveRule = (rule) => {
+    setRules((prev) => {
+      const exists = prev.find((r) => r.id === rule.id)
+      if (exists) {
+        return prev.map((r) => (r.id === rule.id ? rule : r))
+      }
+      return [...prev, rule]
+    })
+    setEditingRule(null)
+  }
+
+  const handleDeleteRule = (id) => {
+    setRules((prev) => prev.filter((r) => r.id !== id))
+  }
+
+  const handleEditRule = (rule) => {
+    setEditingRule(rule)
   }
 
   const handleShare = async () => {
@@ -178,24 +219,62 @@ function App() {
         </div>
       )}
 
-      <main className="app-main">
-        <aside className="sidebar">
-          <IngredientForm
-            key={editingIngredient?.id || 'new'}
-            onAdd={handleAdd}
-            editingIngredient={editingIngredient}
-            onUpdate={handleUpdate}
-            onCancelEdit={() => setEditingIngredient(null)}
-          />
-        </aside>
-        <section className="content">
-          <IngredientList
-            ingredients={ingredients}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        </section>
-      </main>
+      <nav className="tab-bar">
+        <button
+          className={`tab ${tab === 'ingredients' ? 'tab-active' : ''}`}
+          onClick={() => setTab('ingredients')}
+        >
+          Ingredients
+        </button>
+        <button
+          className={`tab ${tab === 'rules' ? 'tab-active' : ''}`}
+          onClick={() => setTab('rules')}
+        >
+          Rules
+        </button>
+      </nav>
+
+      {tab === 'ingredients' && (
+        <main className="app-main">
+          <aside className="sidebar">
+            <IngredientForm
+              key={editingIngredient?.id || 'new'}
+              onAdd={handleAdd}
+              editingIngredient={editingIngredient}
+              onUpdate={handleUpdate}
+              onCancelEdit={() => setEditingIngredient(null)}
+            />
+          </aside>
+          <section className="content">
+            <IngredientList
+              ingredients={ingredients}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          </section>
+        </main>
+      )}
+
+      {tab === 'rules' && (
+        <main className="app-main">
+          <aside className="sidebar">
+            <RuleBuilder
+              key={editingRule?.id || 'new'}
+              onSave={handleSaveRule}
+              editingRule={editingRule}
+              onCancelEdit={() => setEditingRule(null)}
+              ingredients={ingredients}
+            />
+          </aside>
+          <section className="content">
+            <RuleList
+              rules={rules}
+              onEdit={handleEditRule}
+              onDelete={handleDeleteRule}
+            />
+          </section>
+        </main>
+      )}
     </div>
   )
 }
