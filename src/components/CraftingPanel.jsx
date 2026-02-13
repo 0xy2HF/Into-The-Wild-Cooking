@@ -33,6 +33,10 @@ function evaluateModifier(rule, selected) {
     const count = selected.filter((i) => i.name === rule.result.ingredient).length
     if (count > (rule.result.threshold || 2)) return { count: 1, triggered: true }
   }
+  if (perCount === 'threshold_type') {
+    const count = selected.filter((i) => i.types.includes(rule.result.typeName)).length
+    if (count > (rule.result.threshold || 2)) return { count: 1, triggered: true }
+  }
   return { count: 0, triggered: false }
 }
 

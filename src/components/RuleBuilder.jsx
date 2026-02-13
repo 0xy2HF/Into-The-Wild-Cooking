@@ -10,6 +10,7 @@ const CONDITION_TYPES = [
 const MODIFIER_MODES = [
   { value: 'each_unappetising', label: 'Each un-appetising ingredient' },
   { value: 'threshold_ingredient', label: 'If too many of ingredient' },
+  { value: 'threshold_type', label: 'If too many type of' },
 ]
 
 function emptyCondition() {
@@ -63,6 +64,7 @@ function RuleBuilder({ onSave, editingRule, onCancelEdit, ingredients }) {
     if (rule.kind === 'recipe' && !rule.result.recipeName.trim()) return
     if (rule.kind === 'modifier' && !rule.result.perCount) return
     if (rule.kind === 'modifier' && rule.result.perCount === 'threshold_ingredient' && !rule.result.ingredient?.trim()) return
+    if (rule.kind === 'modifier' && rule.result.perCount === 'threshold_type' && !rule.result.typeName?.trim()) return
 
     const saved = {
       ...rule,
@@ -220,18 +222,21 @@ function RuleBuilder({ onSave, editingRule, onCancelEdit, ingredients }) {
           <label className="rule-section-label">Mode</label>
           <select
             value={rule.result.perCount || 'each_unappetising'}
-            onChange={(e) =>
+            onChange={(e) => {
+              const mode = e.target.value
+              const needsThreshold = mode === 'threshold_ingredient' || mode === 'threshold_type'
               setRule((p) => ({
                 ...p,
                 result: {
                   ...p.result,
-                  perCount: e.target.value,
-                  threshold: e.target.value === 'threshold_ingredient' ? (p.result.threshold || 2) : undefined,
-                  ingredient: e.target.value === 'threshold_ingredient' ? (p.result.ingredient || '') : undefined,
-                  timeDivider: e.target.value === 'threshold_ingredient' ? (p.result.timeDivider || 1) : undefined,
+                  perCount: mode,
+                  threshold: needsThreshold ? (p.result.threshold || 2) : undefined,
+                  ingredient: mode === 'threshold_ingredient' ? (p.result.ingredient || '') : undefined,
+                  typeName: mode === 'threshold_type' ? (p.result.typeName || '') : undefined,
+                  timeDivider: needsThreshold ? (p.result.timeDivider || 1) : undefined,
                 },
               }))
-            }
+            }}
           >
             {MODIFIER_MODES.map((m) => (
               <option key={m.value} value={m.value}>
@@ -260,6 +265,63 @@ function RuleBuilder({ onSave, editingRule, onCancelEdit, ingredients }) {
                   <datalist id="modifier-ingredient-names">
                     {allNames.map((n) => (
                       <option key={n} value={n} />
+                    ))}
+                  </datalist>
+                </div>
+                <div className="form-group">
+                  <label>Threshold (more than)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="5"
+                    value={rule.result.threshold || 2}
+                    onChange={(e) =>
+                      setRule((p) => ({
+                        ...p,
+                        result: { ...p.result, threshold: Number(e.target.value) },
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Time divider</label>
+                <input
+                  type="number"
+                  min="1"
+                  step="0.5"
+                  value={rule.result.timeDivider || 1}
+                  onChange={(e) =>
+                    setRule((p) => ({
+                      ...p,
+                      result: { ...p.result, timeDivider: Number(e.target.value) },
+                    }))
+                  }
+                />
+              </div>
+            </div>
+          )}
+
+          {rule.result.perCount === 'threshold_type' && (
+            <div className="modifier-threshold-fields">
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Type</label>
+                  <input
+                    type="text"
+                    value={rule.result.typeName || ''}
+                    onChange={(e) =>
+                      setRule((p) => ({
+                        ...p,
+                        result: { ...p.result, typeName: e.target.value },
+                      }))
+                    }
+                    placeholder="e.g. Meat"
+                    list="modifier-type-names"
+                  />
+                  <datalist id="modifier-type-names">
+                    {allTypes.map((t) => (
+                      <option key={t} value={t} />
                     ))}
                   </datalist>
                 </div>

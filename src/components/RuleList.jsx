@@ -11,6 +11,8 @@ function formatModifierCondition(result) {
   if (result.perCount === 'each_unappetising') return 'per un-appetising'
   if (result.perCount === 'threshold_ingredient')
     return `${result.threshold || 2}+ "${result.ingredient}"`
+  if (result.perCount === 'threshold_type')
+    return `${result.threshold || 2}+ #${result.typeName}`
   return result.perCount
 }
 
