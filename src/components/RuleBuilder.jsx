@@ -7,6 +7,12 @@ const CONDITION_TYPES = [
   { value: 'all_unappetising', label: 'All un-appetising' },
 ]
 
+const PER_COUNT_TYPES = [
+  { value: 'each_unappetising', label: 'Each un-appetising ingredient' },
+  { value: 'each_appetising', label: 'Each appetising ingredient' },
+  { value: 'each_ingredient', label: 'Each ingredient' },
+]
+
 function emptyCondition() {
   return { type: 'has_ingredient', value: '', count: 1 }
 }
@@ -15,6 +21,7 @@ function emptyRule() {
   return {
     id: '',
     name: '',
+    kind: 'recipe',
     conditions: [emptyCondition()],
     result: { recipeName: '', multiplier: 1 },
   }
@@ -52,7 +59,9 @@ function RuleBuilder({ onSave, editingRule, onCancelEdit, ingredients }) {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (!rule.name.trim() || !rule.result.recipeName.trim()) return
+    if (!rule.name.trim()) return
+    if (rule.kind === 'recipe' && !rule.result.recipeName.trim()) return
+    if (rule.kind === 'modifier' && !rule.result.perCount) return
 
     const saved = {
       ...rule,
@@ -83,11 +92,44 @@ function RuleBuilder({ onSave, editingRule, onCancelEdit, ingredients }) {
           type="text"
           value={rule.name}
           onChange={(e) => setRule((p) => ({ ...p, name: e.target.value }))}
-          placeholder="e.g. Risotto Rule"
+          placeholder={rule.kind === 'recipe' ? 'e.g. Risotto Rule' : 'e.g. Un-appetising Malus'}
         />
       </div>
 
-      <div className="rule-conditions">
+      <div className="form-group">
+        <label>Kind</label>
+        <div className="kind-toggle">
+          <button
+            type="button"
+            className={`kind-btn ${rule.kind === 'recipe' ? 'kind-btn-active' : ''}`}
+            onClick={() =>
+              setRule((p) => ({
+                ...p,
+                kind: 'recipe',
+                result: { ...p.result, perCount: undefined },
+              }))
+            }
+          >
+            Recipe
+          </button>
+          <button
+            type="button"
+            className={`kind-btn ${rule.kind === 'modifier' ? 'kind-btn-active' : ''}`}
+            onClick={() =>
+              setRule((p) => ({
+                ...p,
+                kind: 'modifier',
+                conditions: [],
+                result: { ...p.result, recipeName: '', perCount: 'each_unappetising' },
+              }))
+            }
+          >
+            Modifier
+          </button>
+        </div>
+      </div>
+
+      {rule.kind === 'recipe' && <div className="rule-conditions">
         <label className="rule-section-label">Conditions (AND)</label>
         {rule.conditions.map((cond, i) => (
           <div key={i} className="condition-row">
@@ -170,27 +212,52 @@ function RuleBuilder({ onSave, editingRule, onCancelEdit, ingredients }) {
         >
           + Add condition
         </button>
-      </div>
+      </div>}
+
+      {rule.kind === 'modifier' && (
+        <div className="rule-modifier-section">
+          <label className="rule-section-label">Apply per</label>
+          <select
+            value={rule.result.perCount || 'each_unappetising'}
+            onChange={(e) =>
+              setRule((p) => ({
+                ...p,
+                result: { ...p.result, perCount: e.target.value },
+              }))
+            }
+          >
+            {PER_COUNT_TYPES.map((pc) => (
+              <option key={pc.value} value={pc.value}>
+                {pc.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <div className="rule-result">
         <label className="rule-section-label">Result</label>
         <div className="form-row">
+          {rule.kind === 'recipe' && (
+            <div className="form-group">
+              <label>Recipe Name</label>
+              <input
+                type="text"
+                value={rule.result.recipeName}
+                onChange={(e) =>
+                  setRule((p) => ({
+                    ...p,
+                    result: { ...p.result, recipeName: e.target.value },
+                  }))
+                }
+                placeholder="e.g. Risotto"
+              />
+            </div>
+          )}
           <div className="form-group">
-            <label>Recipe Name</label>
-            <input
-              type="text"
-              value={rule.result.recipeName}
-              onChange={(e) =>
-                setRule((p) => ({
-                  ...p,
-                  result: { ...p.result, recipeName: e.target.value },
-                }))
-              }
-              placeholder="e.g. Risotto"
-            />
-          </div>
-          <div className="form-group">
-            <label>Multiplier</label>
+            <label>
+              Multiplier {rule.kind === 'modifier' ? '(applied per match)' : ''}
+            </label>
             <input
               type="number"
               step="0.1"

@@ -22,17 +22,34 @@ function evaluateCondition(cond, selected) {
   return false
 }
 
+function getPerCount(perCount, selected) {
+  if (perCount === 'each_unappetising')
+    return selected.filter((i) => !i.appetisingScore).length
+  if (perCount === 'each_appetising')
+    return selected.filter((i) => i.appetisingScore).length
+  if (perCount === 'each_ingredient') return selected.length
+  return 0
+}
+
 function evaluateRules(rules, selected) {
-  const matched = []
+  const matchedRecipes = []
+  const matchedModifiers = []
   for (const rule of rules) {
-    const allMatch = rule.conditions.every((cond) =>
-      evaluateCondition(cond, selected)
-    )
-    if (allMatch) {
-      matched.push(rule)
+    if (rule.kind === 'modifier') {
+      const count = getPerCount(rule.result.perCount, selected)
+      if (count > 0) {
+        matchedModifiers.push({ ...rule, _count: count })
+      }
+    } else {
+      const allMatch = rule.conditions.every((cond) =>
+        evaluateCondition(cond, selected)
+      )
+      if (allMatch) {
+        matchedRecipes.push(rule)
+      }
     }
   }
-  return matched
+  return { matchedRecipes, matchedModifiers }
 }
 
 function parseTime(timeStr) {
@@ -49,7 +66,7 @@ function formatTime(seconds) {
   return [h, m, s].map((v) => String(v).padStart(2, '0')).join(':')
 }
 
-function computeCraft(selected, matchedRules) {
+function computeCraft(selected, matchedRecipes, matchedModifiers) {
   if (selected.length < 2) return null
 
   const totalFoodPoints = selected.reduce((sum, i) => sum + i.foodPoint, 0)
@@ -66,15 +83,20 @@ function computeCraft(selected, matchedRules) {
   )
 
   let ruleMultiplier = 1
-  for (const rule of matchedRules) {
+  for (const rule of matchedRecipes) {
     ruleMultiplier *= rule.result.multiplier
   }
 
-  const finalMultiplier = boostMultiplier * ruleMultiplier
+  let modifierMultiplier = 1
+  for (const mod of matchedModifiers) {
+    modifierMultiplier *= Math.pow(mod.result.multiplier, mod._count)
+  }
+
+  const finalMultiplier = boostMultiplier * ruleMultiplier * modifierMultiplier
   const finalFoodPoints = Math.round(totalFoodPoints * finalMultiplier * 100) / 100
 
-  const bestRecipe = matchedRules.length > 0
-    ? matchedRules.reduce((best, r) =>
+  const bestRecipe = matchedRecipes.length > 0
+    ? matchedRecipes.reduce((best, r) =>
         r.result.multiplier > best.result.multiplier ? r : best
       )
     : null
@@ -86,6 +108,7 @@ function computeCraft(selected, matchedRules) {
     effects: allEffects,
     boostMultiplier: Math.round(boostMultiplier * 100) / 100,
     ruleMultiplier: Math.round(ruleMultiplier * 100) / 100,
+    modifierMultiplier: Math.round(modifierMultiplier * 100) / 100,
     finalMultiplier: Math.round(finalMultiplier * 100) / 100,
     recipeName: bestRecipe?.result.recipeName || 'Suspicious Meal',
   }
@@ -96,14 +119,14 @@ function CraftingPanel({ ingredients, rules }) {
 
   const selected = slots.filter(Boolean)
 
-  const matchedRules = useMemo(
+  const { matchedRecipes, matchedModifiers } = useMemo(
     () => evaluateRules(rules, selected),
     [rules, selected]
   )
 
   const craft = useMemo(
-    () => computeCraft(selected, matchedRules),
-    [selected, matchedRules]
+    () => computeCraft(selected, matchedRecipes, matchedModifiers),
+    [selected, matchedRecipes, matchedModifiers]
   )
 
   const setSlot = (index, ingredientId) => {
@@ -188,6 +211,14 @@ function CraftingPanel({ ingredients, rules }) {
                   x{craft.ruleMultiplier}
                 </span>
               </div>
+              {craft.modifierMultiplier !== 1 && (
+                <div className="craft-stat">
+                  <span className="craft-stat-label">Modifier</span>
+                  <span className={`craft-stat-value ${craft.modifierMultiplier >= 1 ? 'craft-bonus' : 'craft-malus'}`}>
+                    x{craft.modifierMultiplier}
+                  </span>
+                </div>
+              )}
               <div className="craft-stat">
                 <span className="craft-stat-label">Total Multiplier</span>
                 <span className={`craft-stat-value ${craft.finalMultiplier >= 1 ? 'craft-bonus' : 'craft-malus'}`}>
@@ -207,10 +238,10 @@ function CraftingPanel({ ingredients, rules }) {
               </div>
             )}
 
-            {matchedRules.length > 0 && (
+            {matchedRecipes.length > 0 && (
               <div className="craft-matched-rules">
                 <span className="craft-stat-label">Matched Rules</span>
-                {matchedRules.map((r) => (
+                {matchedRecipes.map((r) => (
                   <div key={r.id} className="craft-matched-rule">
                     <span>{r.name}</span>
                     <span className={`multiplier-badge ${r.result.multiplier >= 1 ? 'multiplier-bonus' : 'multiplier-malus'}`}>
@@ -221,7 +252,21 @@ function CraftingPanel({ ingredients, rules }) {
               </div>
             )}
 
-            {matchedRules.length === 0 && (
+            {matchedModifiers.length > 0 && (
+              <div className="craft-matched-rules">
+                <span className="craft-stat-label">Active Modifiers</span>
+                {matchedModifiers.map((m) => (
+                  <div key={m.id} className="craft-matched-rule">
+                    <span>{m.name} ({m._count}x)</span>
+                    <span className={`multiplier-badge ${m.result.multiplier >= 1 ? 'multiplier-bonus' : 'multiplier-malus'}`}>
+                      x{m.result.multiplier}^{m._count} = x{Math.round(Math.pow(m.result.multiplier, m._count) * 100) / 100}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {matchedRecipes.length === 0 && (
               <div className="craft-no-rules">
                 No rules matched — defaulting to "Suspicious Meal"
               </div>

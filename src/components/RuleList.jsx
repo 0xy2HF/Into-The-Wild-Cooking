@@ -5,6 +5,12 @@ const CONDITION_LABELS = {
   all_unappetising: 'All un-appetising',
 }
 
+const PER_COUNT_LABELS = {
+  each_unappetising: 'per un-appetising',
+  each_appetising: 'per appetising',
+  each_ingredient: 'per ingredient',
+}
+
 function formatCondition(cond) {
   if (cond.type === 'has_ingredient') {
     return cond.count > 1
@@ -36,6 +42,7 @@ function RuleList({ rules, onEdit, onDelete }) {
           <thead>
             <tr>
               <th>Rule</th>
+              <th>Kind</th>
               <th>Conditions</th>
               <th>Recipe</th>
               <th>Multiplier</th>
@@ -47,15 +54,32 @@ function RuleList({ rules, onEdit, onDelete }) {
               <tr key={rule.id}>
                 <td className="sheet-name">{rule.name}</td>
                 <td>
-                  <div className="condition-tags">
-                    {rule.conditions.map((cond, i) => (
-                      <span key={i} className="tag tag-condition">
-                        {formatCondition(cond)}
-                      </span>
-                    ))}
-                  </div>
+                  <span className={`kind-badge kind-badge-${rule.kind || 'recipe'}`}>
+                    {rule.kind === 'modifier' ? 'Modifier' : 'Recipe'}
+                  </span>
                 </td>
-                <td className="sheet-name">{rule.result.recipeName}</td>
+                <td>
+                  {rule.kind === 'modifier' ? (
+                    <span className="tag tag-condition">
+                      {PER_COUNT_LABELS[rule.result.perCount] || rule.result.perCount}
+                    </span>
+                  ) : (
+                    <div className="condition-tags">
+                      {rule.conditions.map((cond, i) => (
+                        <span key={i} className="tag tag-condition">
+                          {formatCondition(cond)}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </td>
+                <td className="sheet-name">
+                  {rule.kind === 'modifier' ? (
+                    <span className="sheet-none">--</span>
+                  ) : (
+                    rule.result.recipeName
+                  )}
+                </td>
                 <td>
                   <span
                     className={`multiplier-badge ${
@@ -65,6 +89,7 @@ function RuleList({ rules, onEdit, onDelete }) {
                     }`}
                   >
                     x{rule.result.multiplier}
+                    {rule.kind === 'modifier' && '/each'}
                   </span>
                 </td>
                 <td>
