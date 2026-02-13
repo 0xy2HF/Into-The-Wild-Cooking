@@ -98,9 +98,9 @@ function computeCraft(selected, matchedRecipes, matchedModifiers) {
 
   const bestRecipe = matchedRecipes.length > 0
     ? matchedRecipes.reduce((best, r) => {
-        const rPrio = r.priority || 0
-        const bestPrio = best.priority || 0
-        if (rPrio !== bestPrio) return rPrio > bestPrio ? r : best
+        const rPrio = r.priority || Infinity
+        const bestPrio = best.priority || Infinity
+        if (rPrio !== bestPrio) return rPrio < bestPrio ? r : best
         return r.result.multiplier > best.result.multiplier ? r : best
       })
     : null

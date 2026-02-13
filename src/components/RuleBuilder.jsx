@@ -340,7 +340,7 @@ function RuleBuilder({ onSave, editingRule, onCancelEdit, ingredients }) {
 
       {rule.kind === 'recipe' && (
         <div className="form-group">
-          <label>Priority <span className="form-hint">(higher wins when multiple recipes match)</span></label>
+          <label>Priority <span className="form-hint">(1 = top priority)</span></label>
           <input
             type="number"
             min="0"
