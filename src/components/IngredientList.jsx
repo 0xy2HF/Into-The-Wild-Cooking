@@ -1,30 +1,65 @@
 import { useState, useMemo } from 'react'
 import { typeTagStyle } from '../utils/typeColor'
 
-function IngredientList({ ingredients, onEdit, onDelete }) {
-  const [search, setSearch] = useState('')
-  const [filterType, setFilterType] = useState('')
+function parseTime(t) {
+  if (!t) return 0
+  const parts = t.split(':').map(Number)
+  if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2]
+  if (parts.length === 2) return parts[0] * 60 + parts[1]
+  return parts[0] || 0
+}
 
-  const allTypes = useMemo(
-    () => [...new Set(ingredients.flatMap((i) => i.types))].sort(),
-    [ingredients]
+function SortTh({ label, sortKey, sort, onSort }) {
+  const active = sort.key === sortKey
+  const arrow = active ? (sort.dir === 'asc' ? ' ▲' : ' ▼') : ''
+  return (
+    <th
+      className="sheet-th-sort"
+      onClick={() => onSort(sortKey)}
+    >
+      {label}{arrow}
+    </th>
   )
+}
 
-  const filtered = useMemo(() => {
-    let list = ingredients
-    if (search) {
-      const q = search.toLowerCase()
-      list = list.filter(
-        (ing) =>
-          ing.name.toLowerCase().includes(q) ||
-          ing.effects.some((e) => e.toLowerCase().includes(q))
-      )
-    }
-    if (filterType) {
-      list = list.filter((ing) => ing.types.includes(filterType))
-    }
+function IngredientList({ ingredients, onEdit, onDelete }) {
+  const [sort, setSort] = useState({ key: null, dir: 'asc' })
+
+  const handleSort = (key) => {
+    setSort((prev) => {
+      if (prev.key === key) {
+        return { key, dir: prev.dir === 'asc' ? 'desc' : 'asc' }
+      }
+      return { key, dir: 'asc' }
+    })
+  }
+
+  const sorted = useMemo(() => {
+    if (!sort.key) return ingredients
+    const list = [...ingredients]
+    const dir = sort.dir === 'asc' ? 1 : -1
+    list.sort((a, b) => {
+      switch (sort.key) {
+        case 'name':
+          return dir * a.name.localeCompare(b.name)
+        case 'types':
+          return dir * (a.types[0] || '').localeCompare(b.types[0] || '')
+        case 'appetising':
+          return dir * ((a.appetisingScore ? 1 : 0) - (b.appetisingScore ? 1 : 0))
+        case 'foodPoint':
+          return dir * (a.foodPoint - b.foodPoint)
+        case 'effects':
+          return dir * (a.effects[0] || '').localeCompare(b.effects[0] || '')
+        case 'time':
+          return dir * (parseTime(a.time) - parseTime(b.time))
+        case 'boost':
+          return dir * ((a.boost ?? 0) - (b.boost ?? 0))
+        default:
+          return 0
+      }
+    })
     return list
-  }, [ingredients, search, filterType])
+  }, [ingredients, sort])
 
   if (ingredients.length === 0) {
     return (
@@ -36,53 +71,24 @@ function IngredientList({ ingredients, onEdit, onDelete }) {
 
   return (
     <div className="ingredient-list">
-      <h2>Ingredients ({filtered.length}{filtered.length !== ingredients.length ? `/${ingredients.length}` : ''})</h2>
-
-      <div className="table-filters">
-        <input
-          type="text"
-          className="filter-search"
-          placeholder="Search name or effect..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <select
-          className="filter-select"
-          value={filterType}
-          onChange={(e) => setFilterType(e.target.value)}
-        >
-          <option value="">All types</option>
-          {allTypes.map((t) => (
-            <option key={t} value={t}>{t}</option>
-          ))}
-        </select>
-        {(search || filterType) && (
-          <button
-            className="btn-icon"
-            onClick={() => { setSearch(''); setFilterType('') }}
-            title="Clear filters"
-          >
-            ✕
-          </button>
-        )}
-      </div>
+      <h2>Ingredients ({ingredients.length})</h2>
 
       <div className="sheet-wrapper">
         <table className="sheet">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Types</th>
-              <th>Appetising</th>
-              <th>Food Pt</th>
-              <th>Effects</th>
-              <th>Time</th>
-              <th>Boost</th>
+              <SortTh label="Name" sortKey="name" sort={sort} onSort={handleSort} />
+              <SortTh label="Types" sortKey="types" sort={sort} onSort={handleSort} />
+              <SortTh label="Appetising" sortKey="appetising" sort={sort} onSort={handleSort} />
+              <SortTh label="Food Pt" sortKey="foodPoint" sort={sort} onSort={handleSort} />
+              <SortTh label="Effects" sortKey="effects" sort={sort} onSort={handleSort} />
+              <SortTh label="Time" sortKey="time" sort={sort} onSort={handleSort} />
+              <SortTh label="Boost" sortKey="boost" sort={sort} onSort={handleSort} />
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map((ing) => (
+            {sorted.map((ing) => (
               <tr key={ing.id}>
                 <td className="sheet-name">{ing.name}</td>
                 <td>

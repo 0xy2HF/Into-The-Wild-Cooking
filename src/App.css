@@ -308,44 +308,16 @@
   opacity: 0.5;
 }
 
-/* ===== Table Filters ===== */
-.table-filters {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  margin-bottom: 0.75rem;
-}
-
-.filter-search {
-  flex: 1;
-  padding: 0.4rem 0.6rem;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.2);
-  color: inherit;
-  font-size: 0.85rem;
-  font-family: inherit;
-}
-
-.filter-search:focus {
-  outline: none;
-  border-color: #646cff;
-}
-
-.filter-select {
-  padding: 0.4rem 0.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.2);
-  color: inherit;
-  font-size: 0.85rem;
-  font-family: inherit;
+/* ===== Sortable Headers ===== */
+.sheet-th-sort {
   cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition: color 0.15s;
 }
 
-.filter-select:focus {
-  outline: none;
-  border-color: #646cff;
+.sheet-th-sort:hover {
+  color: #646cff;
 }
 
 /* ===== Sheet / Table ===== */

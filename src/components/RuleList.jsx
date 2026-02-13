@@ -28,25 +28,51 @@ function formatCondition(cond) {
   return CONDITION_LABELS[cond.type] || cond.type
 }
 
-function RuleList({ rules, onEdit, onDelete }) {
-  const [search, setSearch] = useState('')
-  const [filterKind, setFilterKind] = useState('')
+function SortTh({ label, sortKey, sort, onSort }) {
+  const active = sort.key === sortKey
+  const arrow = active ? (sort.dir === 'asc' ? ' ▲' : ' ▼') : ''
+  return (
+    <th
+      className="sheet-th-sort"
+      onClick={() => onSort(sortKey)}
+    >
+      {label}{arrow}
+    </th>
+  )
+}
 
-  const filtered = useMemo(() => {
-    let list = rules
-    if (search) {
-      const q = search.toLowerCase()
-      list = list.filter(
-        (r) =>
-          r.name.toLowerCase().includes(q) ||
-          (r.result.recipeName && r.result.recipeName.toLowerCase().includes(q))
-      )
-    }
-    if (filterKind) {
-      list = list.filter((r) => (r.kind || 'recipe') === filterKind)
-    }
+function RuleList({ rules, onEdit, onDelete }) {
+  const [sort, setSort] = useState({ key: null, dir: 'asc' })
+
+  const handleSort = (key) => {
+    setSort((prev) => {
+      if (prev.key === key) {
+        return { key, dir: prev.dir === 'asc' ? 'desc' : 'asc' }
+      }
+      return { key, dir: 'asc' }
+    })
+  }
+
+  const sorted = useMemo(() => {
+    if (!sort.key) return rules
+    const list = [...rules]
+    const dir = sort.dir === 'asc' ? 1 : -1
+    list.sort((a, b) => {
+      switch (sort.key) {
+        case 'name':
+          return dir * a.name.localeCompare(b.name)
+        case 'kind':
+          return dir * (a.kind || 'recipe').localeCompare(b.kind || 'recipe')
+        case 'recipe':
+          return dir * (a.result.recipeName || '').localeCompare(b.result.recipeName || '')
+        case 'multiplier':
+          return dir * (a.result.multiplier - b.result.multiplier)
+        default:
+          return 0
+      }
+    })
     return list
-  }, [rules, search, filterKind])
+  }, [rules, sort])
 
   if (rules.length === 0) {
     return (
@@ -58,50 +84,22 @@ function RuleList({ rules, onEdit, onDelete }) {
 
   return (
     <div className="ingredient-list">
-      <h2>Rules ({filtered.length}{filtered.length !== rules.length ? `/${rules.length}` : ''})</h2>
-
-      <div className="table-filters">
-        <input
-          type="text"
-          className="filter-search"
-          placeholder="Search name or recipe..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <select
-          className="filter-select"
-          value={filterKind}
-          onChange={(e) => setFilterKind(e.target.value)}
-        >
-          <option value="">All kinds</option>
-          <option value="recipe">Recipe</option>
-          <option value="modifier">Modifier</option>
-        </select>
-        {(search || filterKind) && (
-          <button
-            className="btn-icon"
-            onClick={() => { setSearch(''); setFilterKind('') }}
-            title="Clear filters"
-          >
-            ✕
-          </button>
-        )}
-      </div>
+      <h2>Rules ({rules.length})</h2>
 
       <div className="sheet-wrapper">
         <table className="sheet">
           <thead>
             <tr>
-              <th>Rule</th>
-              <th>Kind</th>
+              <SortTh label="Rule" sortKey="name" sort={sort} onSort={handleSort} />
+              <SortTh label="Kind" sortKey="kind" sort={sort} onSort={handleSort} />
               <th>Conditions</th>
-              <th>Recipe</th>
-              <th>Multiplier</th>
+              <SortTh label="Recipe" sortKey="recipe" sort={sort} onSort={handleSort} />
+              <SortTh label="Multiplier" sortKey="multiplier" sort={sort} onSort={handleSort} />
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map((rule) => (
+            {sorted.map((rule) => (
               <tr key={rule.id}>
                 <td className="sheet-name">{rule.name}</td>
                 <td>
