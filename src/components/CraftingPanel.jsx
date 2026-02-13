@@ -22,13 +22,17 @@ function evaluateCondition(cond, selected) {
   return false
 }
 
-function getPerCount(perCount, selected) {
-  if (perCount === 'each_unappetising')
-    return selected.filter((i) => !i.appetisingScore).length
-  if (perCount === 'each_appetising')
-    return selected.filter((i) => i.appetisingScore).length
-  if (perCount === 'each_ingredient') return selected.length
-  return 0
+function evaluateModifier(rule, selected) {
+  const { perCount } = rule.result
+  if (perCount === 'each_unappetising') {
+    const count = selected.filter((i) => !i.appetisingScore).length
+    if (count > 0) return { count, triggered: true }
+  }
+  if (perCount === 'threshold_ingredient') {
+    const count = selected.filter((i) => i.name === rule.result.ingredient).length
+    if (count > (rule.result.threshold || 2)) return { count: 1, triggered: true }
+  }
+  return { count: 0, triggered: false }
 }
 
 function evaluateRules(rules, selected) {
@@ -36,8 +40,8 @@ function evaluateRules(rules, selected) {
   const matchedModifiers = []
   for (const rule of rules) {
     if (rule.kind === 'modifier') {
-      const count = getPerCount(rule.result.perCount, selected)
-      if (count > 0) {
+      const { count, triggered } = evaluateModifier(rule, selected)
+      if (triggered) {
         matchedModifiers.push({ ...rule, _count: count })
       }
     } else {
@@ -88,12 +92,17 @@ function computeCraft(selected, matchedRecipes, matchedModifiers) {
   }
 
   let modifierMultiplier = 1
+  let timeDivider = 1
   for (const mod of matchedModifiers) {
     modifierMultiplier *= Math.pow(mod.result.multiplier, mod._count)
+    if (mod.result.timeDivider && mod.result.timeDivider > 1) {
+      timeDivider *= mod.result.timeDivider
+    }
   }
 
   const finalMultiplier = boostMultiplier * ruleMultiplier * modifierMultiplier
   const finalFoodPoints = Math.round(totalFoodPoints * finalMultiplier * 100) / 100
+  const finalTime = Math.round(totalTime / timeDivider)
 
   const bestRecipe = matchedRecipes.length > 0
     ? matchedRecipes.reduce((best, r) =>
@@ -105,6 +114,8 @@ function computeCraft(selected, matchedRecipes, matchedModifiers) {
     totalFoodPoints,
     finalFoodPoints,
     totalTime: formatTime(totalTime),
+    finalTime: timeDivider > 1 ? formatTime(finalTime) : null,
+    timeDivider: timeDivider > 1 ? timeDivider : null,
     effects: allEffects,
     boostMultiplier: Math.round(boostMultiplier * 100) / 100,
     ruleMultiplier: Math.round(ruleMultiplier * 100) / 100,
@@ -199,7 +210,13 @@ function CraftingPanel({ ingredients, rules }) {
               </div>
               <div className="craft-stat">
                 <span className="craft-stat-label">Time</span>
-                <span className="craft-stat-value craft-stat-mono">{craft.totalTime}</span>
+                <span className="craft-stat-value craft-stat-mono">
+                  {craft.finalTime ? (
+                    <><s>{craft.totalTime}</s> {craft.finalTime} (/{craft.timeDivider})</>
+                  ) : (
+                    craft.totalTime
+                  )}
+                </span>
               </div>
               <div className="craft-stat">
                 <span className="craft-stat-label">Boost</span>

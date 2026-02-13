@@ -584,6 +584,17 @@
   margin-top: 0.35rem;
 }
 
+.modifier-threshold-fields {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sheet-none {
+  opacity: 0.3;
+}
+
 .rule-conditions {
   margin-bottom: 1rem;
 }

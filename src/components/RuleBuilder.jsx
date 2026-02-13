@@ -7,10 +7,9 @@ const CONDITION_TYPES = [
   { value: 'all_unappetising', label: 'All un-appetising' },
 ]
 
-const PER_COUNT_TYPES = [
+const MODIFIER_MODES = [
   { value: 'each_unappetising', label: 'Each un-appetising ingredient' },
-  { value: 'each_appetising', label: 'Each appetising ingredient' },
-  { value: 'each_ingredient', label: 'Each ingredient' },
+  { value: 'threshold_ingredient', label: 'If too many of ingredient' },
 ]
 
 function emptyCondition() {
@@ -62,6 +61,7 @@ function RuleBuilder({ onSave, editingRule, onCancelEdit, ingredients }) {
     if (!rule.name.trim()) return
     if (rule.kind === 'recipe' && !rule.result.recipeName.trim()) return
     if (rule.kind === 'modifier' && !rule.result.perCount) return
+    if (rule.kind === 'modifier' && rule.result.perCount === 'threshold_ingredient' && !rule.result.ingredient?.trim()) return
 
     const saved = {
       ...rule,
@@ -216,22 +216,85 @@ function RuleBuilder({ onSave, editingRule, onCancelEdit, ingredients }) {
 
       {rule.kind === 'modifier' && (
         <div className="rule-modifier-section">
-          <label className="rule-section-label">Apply per</label>
+          <label className="rule-section-label">Mode</label>
           <select
             value={rule.result.perCount || 'each_unappetising'}
             onChange={(e) =>
               setRule((p) => ({
                 ...p,
-                result: { ...p.result, perCount: e.target.value },
+                result: {
+                  ...p.result,
+                  perCount: e.target.value,
+                  threshold: e.target.value === 'threshold_ingredient' ? (p.result.threshold || 2) : undefined,
+                  ingredient: e.target.value === 'threshold_ingredient' ? (p.result.ingredient || '') : undefined,
+                  timeDivider: e.target.value === 'threshold_ingredient' ? (p.result.timeDivider || 1) : undefined,
+                },
               }))
             }
           >
-            {PER_COUNT_TYPES.map((pc) => (
-              <option key={pc.value} value={pc.value}>
-                {pc.label}
+            {MODIFIER_MODES.map((m) => (
+              <option key={m.value} value={m.value}>
+                {m.label}
               </option>
             ))}
           </select>
+
+          {rule.result.perCount === 'threshold_ingredient' && (
+            <div className="modifier-threshold-fields">
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Ingredient</label>
+                  <input
+                    type="text"
+                    value={rule.result.ingredient || ''}
+                    onChange={(e) =>
+                      setRule((p) => ({
+                        ...p,
+                        result: { ...p.result, ingredient: e.target.value },
+                      }))
+                    }
+                    placeholder="e.g. Salt"
+                    list="modifier-ingredient-names"
+                  />
+                  <datalist id="modifier-ingredient-names">
+                    {allNames.map((n) => (
+                      <option key={n} value={n} />
+                    ))}
+                  </datalist>
+                </div>
+                <div className="form-group">
+                  <label>Threshold (more than)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="5"
+                    value={rule.result.threshold || 2}
+                    onChange={(e) =>
+                      setRule((p) => ({
+                        ...p,
+                        result: { ...p.result, threshold: Number(e.target.value) },
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Time divider</label>
+                <input
+                  type="number"
+                  min="1"
+                  step="0.5"
+                  value={rule.result.timeDivider || 1}
+                  onChange={(e) =>
+                    setRule((p) => ({
+                      ...p,
+                      result: { ...p.result, timeDivider: Number(e.target.value) },
+                    }))
+                  }
+                />
+              </div>
+            </div>
+          )}
         </div>
       )}
 

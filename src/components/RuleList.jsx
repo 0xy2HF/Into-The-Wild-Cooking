@@ -5,10 +5,11 @@ const CONDITION_LABELS = {
   all_unappetising: 'All un-appetising',
 }
 
-const PER_COUNT_LABELS = {
-  each_unappetising: 'per un-appetising',
-  each_appetising: 'per appetising',
-  each_ingredient: 'per ingredient',
+function formatModifierCondition(result) {
+  if (result.perCount === 'each_unappetising') return 'per un-appetising'
+  if (result.perCount === 'threshold_ingredient')
+    return `${result.threshold || 2}+ "${result.ingredient}"`
+  return result.perCount
 }
 
 function formatCondition(cond) {
@@ -61,7 +62,7 @@ function RuleList({ rules, onEdit, onDelete }) {
                 <td>
                   {rule.kind === 'modifier' ? (
                     <span className="tag tag-condition">
-                      {PER_COUNT_LABELS[rule.result.perCount] || rule.result.perCount}
+                      {formatModifierCondition(rule.result)}
                     </span>
                   ) : (
                     <div className="condition-tags">
@@ -89,8 +90,13 @@ function RuleList({ rules, onEdit, onDelete }) {
                     }`}
                   >
                     x{rule.result.multiplier}
-                    {rule.kind === 'modifier' && '/each'}
+                    {rule.kind === 'modifier' && rule.result.perCount === 'each_unappetising' && '/each'}
                   </span>
+                  {rule.result.timeDivider > 1 && (
+                    <span className="multiplier-badge multiplier-malus" style={{ marginLeft: '0.25rem' }}>
+                      time /{rule.result.timeDivider}
+                    </span>
+                  )}
                 </td>
                 <td>
                   <div className="sheet-actions">
