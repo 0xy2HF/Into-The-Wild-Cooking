@@ -842,6 +842,22 @@
   padding: 0.05em 0.4em;
 }
 
+.craft-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.craft-header h2 {
+  margin: 0;
+}
+
+.craft-randomize {
+  font-size: 0.8rem;
+  padding: 0.3rem 0.7rem;
+}
+
 .craft-clear {
   margin-top: 0.75rem;
   width: 100%;

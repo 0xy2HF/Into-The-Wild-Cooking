@@ -166,10 +166,24 @@ function CraftingPanel({ ingredients, rules }) {
 
   const clearAll = () => setSlots(Array(MAX_SLOTS).fill(null))
 
+  const randomize = () => {
+    setSlots(Array.from({ length: MAX_SLOTS }, () => {
+      if (ingredients.length === 0 || Math.random() < 0.1) return null
+      return ingredients[Math.floor(Math.random() * ingredients.length)]
+    }))
+  }
+
   return (
     <div className="crafting-panel">
       <div className="craft-slots">
-        <h2>Craft</h2>
+        <div className="craft-header">
+          <h2>Craft</h2>
+          {ingredients.length > 0 && (
+            <button className="btn-secondary craft-randomize" onClick={randomize}>
+              Randomize
+            </button>
+          )}
+        </div>
         <div className="slots-grid">
           {slots.map((slot, i) => (
             <div key={i} className={`craft-slot ${slot ? 'craft-slot-filled' : ''}`}>
