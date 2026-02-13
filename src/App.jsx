@@ -48,12 +48,6 @@ function saveRules(rules) {
   localStorage.setItem(RULES_STORAGE_KEY, JSON.stringify(rules))
 }
 
-function compressData(data) {
-  const json = JSON.stringify(data)
-  const bytes = new TextEncoder().encode(json)
-  const binString = Array.from(bytes, (b) => String.fromCodePoint(b)).join('')
-  return btoa(binString)
-}
 
 function decompressData(base64) {
   const binString = atob(base64)
@@ -79,7 +73,7 @@ function App() {
   const [ingredients, setIngredients] = useState(loadIngredients)
   const [editingIngredient, setEditingIngredient] = useState(null)
   const [sharedIngredients, setSharedIngredients] = useState(getSharedIngredients)
-  const [copySuccess, setCopySuccess] = useState(false)
+
   const [tab, setTab] = useState('ingredients')
   const [rules, setRules] = useState(loadRules)
   const [editingRule, setEditingRule] = useState(null)
@@ -143,18 +137,6 @@ function App() {
     setEditingRule(rule)
   }
 
-  const handleShare = async () => {
-    const encoded = compressData(ingredients)
-    const url = `${window.location.origin}${window.location.pathname}?shared=${encoded}`
-    try {
-      await navigator.clipboard.writeText(url)
-      setCopySuccess(true)
-      setTimeout(() => setCopySuccess(false), 2000)
-    } catch {
-      // fallback: prompt with url
-      prompt('Copie ce lien pour partager tes ingrédients :', url)
-    }
-  }
 
   const handleMergeShared = () => {
     if (!sharedIngredients) return
@@ -238,10 +220,7 @@ function App() {
         <h1>Into The Wild Cooking</h1>
         <p className="subtitle">Food Crafting Ingredient Manager</p>
         <div className="header-actions">
-          <button className="btn-share" onClick={handleShare}>
-            {copySuccess ? 'Lien copié !' : 'Partager'}
-          </button>
-          <button className="btn-secondary" onClick={handleExport}>
+<button className="btn-secondary" onClick={handleExport}>
             Export {tab === 'rules' ? 'Rules' : 'Ingredients'}
           </button>
           <label className="btn-secondary import-btn">
