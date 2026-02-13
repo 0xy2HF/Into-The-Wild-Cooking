@@ -151,13 +151,16 @@ function App() {
   }
 
   const handleExport = () => {
-    const blob = new Blob([JSON.stringify(ingredients, null, 2)], {
+    const isRules = tab === 'rules'
+    const data = isRules ? rules : ingredients
+    const filename = isRules ? 'rules.json' : 'ingredients.json'
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
       type: 'application/json',
     })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = 'ingredients.json'
+    a.download = filename
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -169,7 +172,11 @@ function App() {
     reader.onload = (event) => {
       const imported = JSON.parse(event.target.result)
       if (Array.isArray(imported)) {
-        setIngredients(imported)
+        if (tab === 'rules') {
+          setRules(imported)
+        } else {
+          setIngredients(imported)
+        }
       }
     }
     reader.readAsText(file)
@@ -186,10 +193,10 @@ function App() {
             {copySuccess ? 'Lien copié !' : 'Partager'}
           </button>
           <button className="btn-secondary" onClick={handleExport}>
-            Export JSON
+            Export {tab === 'rules' ? 'Rules' : 'Ingredients'}
           </button>
           <label className="btn-secondary import-btn">
-            Import JSON
+            Import {tab === 'rules' ? 'Rules' : 'Ingredients'}
             <input
               type="file"
               accept=".json"
