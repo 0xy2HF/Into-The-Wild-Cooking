@@ -79,12 +79,23 @@ function computeCraft(selected, matchedRecipes, matchedModifiers) {
     0
   )
 
-  const allEffects = [...new Set(selected.flatMap((i) => i.effects))]
-
-  const boostMultiplier = selected.reduce(
-    (prod, i) => prod * (i.boost !== null ? i.boost : 1),
+  const timeBoost = selected.reduce(
+    (prod, i) => prod * (i.boost !== null && i.boostTarget !== 'effect' ? i.boost : 1),
     1
   )
+
+  const effectBoost = selected.reduce(
+    (prod, i) => prod * (i.boost !== null && i.boostTarget === 'effect' ? i.boost : 1),
+    1
+  )
+
+  const allEffectsRaw = [...new Set(selected.flatMap((i) => i.effects))]
+  const effectLevel = effectBoost !== 1 ? Math.round(effectBoost * 10) / 10 : null
+  const allEffects = allEffectsRaw.map((e) =>
+    effectLevel && effectLevel !== 1 ? `${e} ${effectLevel}` : e
+  )
+
+  const boostMultiplier = timeBoost
 
   let ruleMultiplier = 1
   for (const rule of matchedRecipes) {
@@ -102,7 +113,8 @@ function computeCraft(selected, matchedRecipes, matchedModifiers) {
 
   const finalMultiplier = boostMultiplier * ruleMultiplier * modifierMultiplier
   const finalFoodPoints = Math.round(totalFoodPoints * finalMultiplier * 100) / 100
-  const finalTime = Math.round(totalTime / timeDivider)
+  const boostedTime = Math.round(totalTime * timeBoost)
+  const finalTime = Math.round(boostedTime / timeDivider)
 
   const bestRecipe = matchedRecipes.length > 0
     ? matchedRecipes.reduce((best, r) =>
@@ -110,13 +122,17 @@ function computeCraft(selected, matchedRecipes, matchedModifiers) {
       )
     : null
 
+  const timeModified = timeBoost !== 1 || timeDivider > 1
+
   return {
     totalFoodPoints,
     finalFoodPoints,
     totalTime: formatTime(totalTime),
-    finalTime: timeDivider > 1 ? formatTime(finalTime) : null,
+    finalTime: timeModified ? formatTime(finalTime) : null,
+    timeBoost: timeBoost !== 1 ? Math.round(timeBoost * 100) / 100 : null,
     timeDivider: timeDivider > 1 ? timeDivider : null,
     effects: allEffects,
+    effectBoost: effectLevel,
     boostMultiplier: Math.round(boostMultiplier * 100) / 100,
     ruleMultiplier: Math.round(ruleMultiplier * 100) / 100,
     modifierMultiplier: Math.round(modifierMultiplier * 100) / 100,
@@ -212,15 +228,15 @@ function CraftingPanel({ ingredients, rules }) {
                 <span className="craft-stat-label">Time</span>
                 <span className="craft-stat-value craft-stat-mono">
                   {craft.finalTime ? (
-                    <><s>{craft.totalTime}</s> {craft.finalTime} (/{craft.timeDivider})</>
+                    <>
+                      <s>{craft.totalTime}</s> {craft.finalTime}
+                      {craft.timeBoost && <span className="craft-time-detail"> x{craft.timeBoost}</span>}
+                      {craft.timeDivider && <span className="craft-time-detail"> /{craft.timeDivider}</span>}
+                    </>
                   ) : (
                     craft.totalTime
                   )}
                 </span>
-              </div>
-              <div className="craft-stat">
-                <span className="craft-stat-label">Boost</span>
-                <span className="craft-stat-value">x{craft.boostMultiplier}</span>
               </div>
               <div className="craft-stat">
                 <span className="craft-stat-label">Rule Multiplier</span>

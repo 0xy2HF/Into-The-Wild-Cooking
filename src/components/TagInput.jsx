@@ -1,7 +1,9 @@
 import { useState } from 'react'
 
-function TagInput({ tags, onTagsChange, placeholder }) {
+function TagInput({ tags, onTagsChange, placeholder, suggestions }) {
   const [input, setInput] = useState('')
+
+  const listId = suggestions?.length ? `tag-suggestions-${placeholder?.replace(/\s/g, '') || 'default'}` : undefined
 
   const addTag = () => {
     const trimmed = input.trim()
@@ -47,7 +49,15 @@ function TagInput({ tags, onTagsChange, placeholder }) {
           onKeyDown={handleKeyDown}
           placeholder={tags.length === 0 ? placeholder : ''}
           className="tag-input"
+          list={listId}
         />
+        {listId && (
+          <datalist id={listId}>
+            {suggestions.filter((s) => !tags.includes(s)).map((s) => (
+              <option key={s} value={s} />
+            ))}
+          </datalist>
+        )}
       </div>
       <button type="button" className="tag-add-btn" onClick={addTag}>
         +

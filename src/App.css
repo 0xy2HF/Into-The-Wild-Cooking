@@ -467,6 +467,28 @@
   font-weight: 600;
 }
 
+.boost-target-label {
+  opacity: 0.6;
+  font-weight: 400;
+  font-size: 0.7rem;
+}
+
+.boost-target-toggle {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 0.35rem;
+}
+
+.boost-target-toggle .kind-btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.craft-time-detail {
+  opacity: 0.6;
+  font-size: 0.85em;
+}
+
 /* ===== Tabs ===== */
 .tab-bar {
   display: flex;

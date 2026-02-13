@@ -9,10 +9,14 @@ const emptyIngredient = {
   effects: [],
   time: '00:00:30',
   boost: 1.0,
+  boostTarget: 'time',
 }
 
-function IngredientForm({ onAdd, editingIngredient, onUpdate, onCancelEdit }) {
+function IngredientForm({ onAdd, editingIngredient, onUpdate, onCancelEdit, ingredients }) {
   const [ingredient, setIngredient] = useState(editingIngredient || emptyIngredient)
+
+  const allTypes = [...new Set(ingredients.flatMap((i) => i.types))].sort()
+  const allEffects = [...new Set(ingredients.flatMap((i) => i.effects))].sort()
 
   const handleChange = (field, value) => {
     setIngredient((prev) => ({ ...prev, [field]: value }))
@@ -58,6 +62,7 @@ function IngredientForm({ onAdd, editingIngredient, onUpdate, onCancelEdit }) {
           tags={ingredient.types}
           onTagsChange={(tags) => handleChange('types', tags)}
           placeholder="Add a type and press Enter"
+          suggestions={allTypes}
         />
       </div>
 
@@ -92,6 +97,7 @@ function IngredientForm({ onAdd, editingIngredient, onUpdate, onCancelEdit }) {
           tags={ingredient.effects}
           onTagsChange={(tags) => handleChange('effects', tags)}
           placeholder="Add an effect and press Enter"
+          suggestions={allEffects}
         />
       </div>
 
@@ -136,15 +142,33 @@ function IngredientForm({ onAdd, editingIngredient, onUpdate, onCancelEdit }) {
             None
           </label>
           {ingredient.boost !== null && (
-            <input
-              id="boost"
-              type="number"
-              min="0.1"
-              max="10"
-              step="0.1"
-              value={ingredient.boost}
-              onChange={(e) => handleChange('boost', Number(e.target.value))}
-            />
+            <>
+              <div className="boost-target-toggle">
+                <button
+                  type="button"
+                  className={`kind-btn ${ingredient.boostTarget !== 'effect' ? 'kind-btn-active' : ''}`}
+                  onClick={() => handleChange('boostTarget', 'time')}
+                >
+                  Time
+                </button>
+                <button
+                  type="button"
+                  className={`kind-btn ${ingredient.boostTarget === 'effect' ? 'kind-btn-active' : ''}`}
+                  onClick={() => handleChange('boostTarget', 'effect')}
+                >
+                  Effect
+                </button>
+              </div>
+              <input
+                id="boost"
+                type="number"
+                min="0.1"
+                max="10"
+                step="0.1"
+                value={ingredient.boost}
+                onChange={(e) => handleChange('boost', Number(e.target.value))}
+              />
+            </>
           )}
         </div>
       </div>

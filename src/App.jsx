@@ -250,6 +250,7 @@ function App() {
               editingIngredient={editingIngredient}
               onUpdate={handleUpdate}
               onCancelEdit={() => setEditingIngredient(null)}
+              ingredients={ingredients}
             />
           </aside>
           <section className="content">

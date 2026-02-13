@@ -55,7 +55,9 @@ function IngredientList({ ingredients, onEdit, onDelete }) {
                   {ing.boost === null ? (
                     <span className="sheet-none">None</span>
                   ) : ing.boost !== 1 ? (
-                    <span className="boost-display">x{ing.boost}</span>
+                    <span className="boost-display">
+                      x{ing.boost} <span className="boost-target-label">{ing.boostTarget === 'effect' ? 'effect' : 'time'}</span>
+                    </span>
                   ) : null}
                 </td>
                 <td>
