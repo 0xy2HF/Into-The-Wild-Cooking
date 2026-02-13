@@ -166,7 +166,10 @@ function App() {
   const handleExport = () => {
     const isRules = tab === 'rules'
     const data = isRules ? rules : ingredients
-    const filename = isRules ? 'rules.json' : 'ingredients.json'
+    const now = new Date()
+    const timestamp = now.toISOString().slice(0, 19).replace(/[T:]/g, '-')
+    const prefix = isRules ? 'rules' : 'ingredients'
+    const filename = `${prefix}-${timestamp}.json`
     const blob = new Blob([JSON.stringify(data, null, 2)], {
       type: 'application/json',
     })
