@@ -338,20 +338,6 @@ function RuleBuilder({ onSave, editingRule, onCancelEdit, ingredients }) {
         </div>
       </div>
 
-      {rule.kind === 'recipe' && (
-        <div className="form-group">
-          <label>Priority <span className="form-hint">(1 = top priority)</span></label>
-          <input
-            type="number"
-            min="0"
-            value={rule.priority || 0}
-            onChange={(e) =>
-              setRule((p) => ({ ...p, priority: Number(e.target.value) }))
-            }
-          />
-        </div>
-      )}
-
       <div className="form-actions">
         <button className="btn-primary" type="submit">
           {isEditing ? 'Update Rule' : 'Save Rule'}

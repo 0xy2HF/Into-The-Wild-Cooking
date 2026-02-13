@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 
 const CONDITION_LABELS = {
   has_ingredient: 'Has',
@@ -28,53 +28,74 @@ function formatCondition(cond) {
   return CONDITION_LABELS[cond.type] || cond.type
 }
 
-function SortTh({ label, sortKey, sort, onSort }) {
-  const active = sort.key === sortKey
-  const arrow = active ? (sort.dir === 'asc' ? ' ▲' : ' ▼') : ''
-  return (
-    <th
-      className="sheet-th-sort"
-      onClick={() => onSort(sortKey)}
-    >
-      {label}{arrow}
-    </th>
+function RuleList({ rules, onEdit, onDelete, onReorder }) {
+  const [dragId, setDragId] = useState(null)
+  const [overId, setOverId] = useState(null)
+  const dragRef = useRef(null)
+
+  const recipes = useMemo(
+    () =>
+      [...rules]
+        .filter((r) => r.kind !== 'modifier')
+        .sort((a, b) => (a.priority || Infinity) - (b.priority || Infinity)),
+    [rules]
   )
-}
 
-function RuleList({ rules, onEdit, onDelete }) {
-  const [sort, setSort] = useState({ key: null, dir: 'asc' })
+  const modifiers = useMemo(
+    () => rules.filter((r) => r.kind === 'modifier'),
+    [rules]
+  )
 
-  const handleSort = (key) => {
-    setSort((prev) => {
-      if (prev.key === key) {
-        return { key, dir: prev.dir === 'asc' ? 'desc' : 'asc' }
-      }
-      return { key, dir: 'asc' }
-    })
+  const handleDragStart = (e, ruleId) => {
+    setDragId(ruleId)
+    dragRef.current = ruleId
+    e.dataTransfer.effectAllowed = 'move'
   }
 
-  const sorted = useMemo(() => {
-    if (!sort.key) return rules
-    const list = [...rules]
-    const dir = sort.dir === 'asc' ? 1 : -1
-    list.sort((a, b) => {
-      switch (sort.key) {
-        case 'name':
-          return dir * a.name.localeCompare(b.name)
-        case 'kind':
-          return dir * (a.kind || 'recipe').localeCompare(b.kind || 'recipe')
-        case 'recipe':
-          return dir * (a.result.recipeName || '').localeCompare(b.result.recipeName || '')
-        case 'priority':
-          return dir * ((a.priority || 0) - (b.priority || 0))
-        case 'multiplier':
-          return dir * (a.result.multiplier - b.result.multiplier)
-        default:
-          return 0
-      }
-    })
-    return list
-  }, [rules, sort])
+  const handleDragOver = (e, ruleId) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+    if (ruleId !== overId) {
+      setOverId(ruleId)
+    }
+  }
+
+  const handleDragLeave = () => {
+    setOverId(null)
+  }
+
+  const handleDrop = (e, targetId) => {
+    e.preventDefault()
+    const sourceId = dragRef.current
+    if (!sourceId || sourceId === targetId) {
+      setDragId(null)
+      setOverId(null)
+      return
+    }
+
+    const sourceIdx = recipes.findIndex((r) => r.id === sourceId)
+    const targetIdx = recipes.findIndex((r) => r.id === targetId)
+    if (sourceIdx === -1 || targetIdx === -1) {
+      setDragId(null)
+      setOverId(null)
+      return
+    }
+
+    const reordered = [...recipes]
+    const [moved] = reordered.splice(sourceIdx, 1)
+    reordered.splice(targetIdx, 0, moved)
+
+    const updated = reordered.map((r, i) => ({ ...r, priority: i + 1 }))
+    onReorder(updated)
+
+    setDragId(null)
+    setOverId(null)
+  }
+
+  const handleDragEnd = () => {
+    setDragId(null)
+    setOverId(null)
+  }
 
   if (rules.length === 0) {
     return (
@@ -92,52 +113,100 @@ function RuleList({ rules, onEdit, onDelete }) {
         <table className="sheet">
           <thead>
             <tr>
-              <SortTh label="Rule" sortKey="name" sort={sort} onSort={handleSort} />
-              <SortTh label="Kind" sortKey="kind" sort={sort} onSort={handleSort} />
+              <th style={{ width: '2rem' }}></th>
+              <th>Rule</th>
+              <th>Kind</th>
               <th>Conditions</th>
-              <SortTh label="Recipe" sortKey="recipe" sort={sort} onSort={handleSort} />
-              <SortTh label="Priority" sortKey="priority" sort={sort} onSort={handleSort} />
-              <SortTh label="Multiplier" sortKey="multiplier" sort={sort} onSort={handleSort} />
+              <th>Recipe</th>
+              <th>Multiplier</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {sorted.map((rule) => (
-              <tr key={rule.id}>
+            {recipes.map((rule, i) => (
+              <tr
+                key={rule.id}
+                draggable
+                onDragStart={(e) => handleDragStart(e, rule.id)}
+                onDragOver={(e) => handleDragOver(e, rule.id)}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => handleDrop(e, rule.id)}
+                onDragEnd={handleDragEnd}
+                className={
+                  dragId === rule.id
+                    ? 'drag-row-dragging'
+                    : overId === rule.id
+                      ? 'drag-row-over'
+                      : ''
+                }
+              >
+                <td className="drag-handle" title="Drag to reorder priority">
+                  <span className="drag-grip">{i + 1}</span>
+                </td>
                 <td className="sheet-name">{rule.name}</td>
                 <td>
                   <span className={`kind-badge kind-badge-${rule.kind || 'recipe'}`}>
-                    {rule.kind === 'modifier' ? 'Modifier' : 'Recipe'}
+                    Recipe
                   </span>
                 </td>
                 <td>
-                  {rule.kind === 'modifier' ? (
-                    <span className="tag tag-condition">
-                      {formatModifierCondition(rule.result)}
-                    </span>
-                  ) : (
-                    <div className="condition-tags">
-                      {rule.conditions.map((cond, i) => (
-                        <span key={i} className="tag tag-condition">
-                          {formatCondition(cond)}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                  <div className="condition-tags">
+                    {rule.conditions.map((cond, j) => (
+                      <span key={j} className="tag tag-condition">
+                        {formatCondition(cond)}
+                      </span>
+                    ))}
+                  </div>
                 </td>
-                <td className="sheet-name">
-                  {rule.kind === 'modifier' ? (
-                    <span className="sheet-none">--</span>
-                  ) : (
-                    rule.result.recipeName
-                  )}
+                <td className="sheet-name">{rule.result.recipeName}</td>
+                <td>
+                  <span
+                    className={`multiplier-badge ${
+                      rule.result.multiplier >= 1
+                        ? 'multiplier-bonus'
+                        : 'multiplier-malus'
+                    }`}
+                  >
+                    x{rule.result.multiplier}
+                  </span>
                 </td>
                 <td>
-                  {rule.kind === 'modifier' ? (
-                    <span className="sheet-none">--</span>
-                  ) : (
-                    <span className="priority-badge">{rule.priority || 0}</span>
-                  )}
+                  <div className="sheet-actions">
+                    <button
+                      className="btn-icon"
+                      onClick={() => onEdit(rule)}
+                      title="Edit"
+                    >
+                      ✎
+                    </button>
+                    <button
+                      className="btn-icon btn-danger"
+                      onClick={() => onDelete(rule.id)}
+                      title="Delete"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+
+            {modifiers.map((rule) => (
+              <tr key={rule.id}>
+                <td></td>
+                <td className="sheet-name">{rule.name}</td>
+                <td>
+                  <span className="kind-badge kind-badge-modifier">
+                    Modifier
+                  </span>
+                </td>
+                <td>
+                  <span className="tag tag-condition">
+                    {formatModifierCondition(rule.result)}
+                  </span>
+                </td>
+                <td className="sheet-name">
+                  <span className="sheet-none">--</span>
                 </td>
                 <td>
                   <span
@@ -148,7 +217,7 @@ function RuleList({ rules, onEdit, onDelete }) {
                     }`}
                   >
                     x{rule.result.multiplier}
-                    {rule.kind === 'modifier' && rule.result.perCount === 'each_unappetising' && '/each'}
+                    {rule.result.perCount === 'each_unappetising' && '/each'}
                   </span>
                   {rule.result.timeDivider > 1 && (
                     <span className="multiplier-badge multiplier-malus" style={{ marginLeft: '0.25rem' }}>

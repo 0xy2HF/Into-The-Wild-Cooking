@@ -103,6 +103,12 @@ function App() {
       if (exists) {
         return prev.map((r) => (r.id === rule.id ? rule : r))
       }
+      if (rule.kind !== 'modifier' && !rule.priority) {
+        const maxPrio = prev
+          .filter((r) => r.kind !== 'modifier')
+          .reduce((max, r) => Math.max(max, r.priority || 0), 0)
+        rule = { ...rule, priority: maxPrio + 1 }
+      }
       return [...prev, rule]
     })
     setEditingRule(null)
@@ -110,6 +116,13 @@ function App() {
 
   const handleDeleteRule = (id) => {
     setRules((prev) => prev.filter((r) => r.id !== id))
+  }
+
+  const handleReorderRules = (reorderedRecipes) => {
+    setRules((prev) => {
+      const modifiers = prev.filter((r) => r.kind === 'modifier')
+      return [...reorderedRecipes, ...modifiers]
+    })
   }
 
   const handleEditRule = (rule) => {
@@ -286,6 +299,7 @@ function App() {
               rules={rules}
               onEdit={handleEditRule}
               onDelete={handleDeleteRule}
+              onReorder={handleReorderRules}
             />
           </section>
         </main>

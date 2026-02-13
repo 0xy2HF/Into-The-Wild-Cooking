@@ -977,16 +977,28 @@
   font-weight: 600;
 }
 
-.form-hint {
-  font-weight: 400;
-  font-size: 0.75rem;
-  opacity: 0.5;
+.drag-handle {
+  cursor: grab;
+  user-select: none;
+  text-align: center;
+  width: 2rem;
 }
 
-.priority-badge {
-  font-size: 0.8rem;
-  font-weight: 600;
-  opacity: 0.7;
+.drag-grip {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  opacity: 0.4;
+  min-width: 1.2rem;
+}
+
+.drag-row-dragging {
+  opacity: 0.3;
+}
+
+.drag-row-over {
+  outline: 2px solid var(--accent, #7c3aed);
+  outline-offset: -2px;
 }
 
 .craft-no-rules {
