@@ -96,8 +96,6 @@ function computeCraft(selected, matchedRecipes, matchedModifiers) {
     effectLevel && effectLevel !== 1 ? `${e} ${effectLevel}` : e
   )
 
-  const boostMultiplier = timeBoost
-
   let ruleMultiplier = 1
   for (const rule of matchedRecipes) {
     ruleMultiplier *= rule.result.multiplier
@@ -112,7 +110,7 @@ function computeCraft(selected, matchedRecipes, matchedModifiers) {
     }
   }
 
-  const finalMultiplier = boostMultiplier * ruleMultiplier * modifierMultiplier
+  const finalMultiplier = ruleMultiplier * modifierMultiplier
   const finalFoodPoints = Math.round(totalFoodPoints * finalMultiplier * 100) / 100
   const boostedTime = Math.round(totalTime * timeBoost)
   const finalTime = Math.round(boostedTime / timeDivider)
@@ -134,7 +132,6 @@ function computeCraft(selected, matchedRecipes, matchedModifiers) {
     timeDivider: timeDivider > 1 ? timeDivider : null,
     effects: allEffects,
     effectBoost: effectLevel,
-    boostMultiplier: Math.round(boostMultiplier * 100) / 100,
     ruleMultiplier: Math.round(ruleMultiplier * 100) / 100,
     modifierMultiplier: Math.round(modifierMultiplier * 100) / 100,
     finalMultiplier: Math.round(finalMultiplier * 100) / 100,
